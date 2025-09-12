@@ -1,0 +1,362 @@
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* Section layouts */
+.welcomeSection {
+  grid-column: span 3;
+}
+
+.applicationsSection {
+  grid-column: span 3;
+}
+
+.jobsSection {
+  grid-column: span 2;
+}
+
+.eventsSection {
+  grid-column: span 1;
+}
+
+.tipsSection {
+  grid-column: span 3;
+}
+
+/* Card styles */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.cardBody {
+  padding: 1.5rem;
+}
+
+/* Welcome section */
+.welcomeTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.welcomeMessage {
+  margin-bottom: 1rem;
+  color: var(--gray-700);
+}
+
+.progressBar {
+  height: 8px;
+  background-color: var(--gray-200);
+  border-radius: 4px;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 4px;
+}
+
+/* Section titles */
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.viewAllLink {
+  font-size: 0.875rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.viewAllLink:hover {
+  text-decoration: underline;
+}
+
+/* Applications list */
+.applicationsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.applicationItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.applicationItem:last-child {
+  border-bottom: none;
+}
+
+.applicationTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0 0 0.25rem;
+}
+
+.applicationCompany {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin: 0;
+}
+
+.applicationMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.applicationStatus {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.applied {
+  background-color: var(--blue-50);
+  color: var(--blue-600);
+}
+
+.interview {
+  background-color: var(--green-50);
+  color: var(--green-600);
+}
+
+.rejected {
+  background-color: var(--red-50);
+  color: var(--red-600);
+}
+
+.applicationDate {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+/* Jobs list */
+.jobsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.jobItem {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.jobItem:last-child {
+  border-bottom: none;
+}
+
+.jobLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.jobLink:hover .jobTitle {
+  color: var(--primary-color);
+}
+
+.jobTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0 0 0.25rem;
+  transition: color 0.2s;
+}
+
+.jobCompany {
+  font-size: 0.875rem;
+  color: var(--gray-700);
+  margin: 0 0 0.5rem;
+}
+
+.jobMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+/* Events list */
+.eventsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.eventItem {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.eventItem:last-child {
+  border-bottom: none;
+}
+
+.eventDate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  height: 3rem;
+  background-color: var(--primary-color-light);
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+}
+
+.eventDay {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.eventMonth {
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  text-transform: uppercase;
+}
+
+.eventInfo {
+  flex: 1;
+}
+
+.eventTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0 0 0.25rem;
+}
+
+.eventTime, .eventLocation {
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  margin: 0;
+}
+
+/* Tips list */
+.tipsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.tipItem {
+  background-color: var(--gray-50);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tipItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.tipLink {
+  display: block;
+  padding: 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.tipCategory {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.tipTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.emptyState {
+  color: var(--gray-500);
+  text-align: center;
+  padding: 2rem 0;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .dashboardGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .welcomeSection, .applicationsSection, .tipsSection {
+    grid-column: span 2;
+  }
+  
+  .jobsSection, .eventsSection {
+    grid-column: span 1;
+  }
+  
+  .tipsList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .welcomeSection, .applicationsSection, .jobsSection, .eventsSection, .tipsSection {
+    grid-column: span 1;
+  }
+  
+  .tipsList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .tipsList {
+    grid-template-columns: 1fr;
+  }
+  
+  .applicationItem, .jobMeta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .applicationMeta {
+    margin-top: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .jobMeta span {
+    margin-top: 0.25rem;
+  }
+}

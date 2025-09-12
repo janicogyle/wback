@@ -1,0 +1,102 @@
+.loginPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 160px); /* Account for navbar and footer */
+  padding: 2rem 1rem;
+  background-color: var(--gray-50);
+}
+
+.loginContainer {
+  width: 100%;
+  max-width: 500px;
+}
+
+.loginCard {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+}
+
+.loginHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.loginTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 0.5rem;
+}
+
+.loginSubtitle {
+  color: var(--gray-600);
+  font-size: 1rem;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.forgotPassword {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.5rem;
+}
+
+.forgotLink {
+  color: var(--gray-600);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.forgotLink:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.loginFooter {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: var(--gray-600);
+}
+
+.registerLink {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.registerLink:hover {
+  text-decoration: underline;
+}
+
+.careerOfficeLink {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.careerOfficeLink a {
+  color: var(--gray-600);
+  text-decoration: none;
+}
+
+.careerOfficeLink a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .loginCard {
+    padding: 1.5rem;
+  }
+  
+  .loginTitle {
+    font-size: 1.75rem;
+  }
+}
