@@ -35,13 +35,13 @@ export default function CareerOfficeLogin() {
     const validationConfig = getValidationConfig();
 
     if (!formData.email.trim()) {
-      newErrors.email = validationConfig.messages.required;
-    } else if (!validationConfig.patterns.email.test(formData.email)) {
-      newErrors.email = validationConfig.messages.invalidEmail;
+      newErrors.email = 'Email is required';
+    } else if (!validationConfig.email.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
 
     if (!formData.password) {
-      newErrors.password = validationConfig.messages.required;
+      newErrors.password = 'Password is required';
     }
 
     return newErrors;

@@ -1,6 +1,7 @@
 .dashboardContainer {
   display: flex;
   min-height: 100vh;
+  padding-top: 4rem; /* Add padding to account for fixed navbar */
 }
 
 /* Sidebar Styles */
@@ -14,6 +15,8 @@
   position: fixed;
   height: 100vh;
   z-index: 10;
+  top: 4rem; /* Position sidebar below the fixed navbar */
+  height: calc(100vh - 4rem); /* Adjust height to account for navbar */
 }
 
 .sidebar.collapsed {
@@ -128,7 +131,7 @@
   border-bottom: 1px solid var(--gray-200);
   height: 70px;
   position: sticky;
-  top: 0;
+  top: 4rem; /* Position below the fixed navbar */
   z-index: 5;
 }
 
@@ -184,7 +187,7 @@
 .contentWrapper {
   padding: 2rem;
   background-color: var(--gray-50);
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - 70px - 4rem); /* Adjust for navbar height and fixed navbar */
   margin-top: 0;
 }
 

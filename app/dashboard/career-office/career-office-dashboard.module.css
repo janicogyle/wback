@@ -17,6 +17,7 @@
   padding: 1.5rem;
   background-color: var(--body-bg);
   min-height: 100vh;
+  padding-top: 5.5rem; /* Increased padding to account for fixed navbar and dashboard header */
 }
 
 .dashboardHeader {

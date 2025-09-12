@@ -17,12 +17,14 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "GCCCS CareerLink - Gordon College CCS Graduate Employment & Development Portal",
   description: "A career support and placement platform for students, graduates, and alumni of Gordon College CCS",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
 };
 
 // Add preconnect for performance optimization
 export const viewport = {
   themeColor: "#FF6600",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({ children }) {

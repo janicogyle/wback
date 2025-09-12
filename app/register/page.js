@@ -40,29 +40,29 @@ export default function Register() {
     const validationConfig = getValidationConfig();
 
     if (!formData.firstName.trim()) {
-      newErrors.firstName = validationConfig.messages.required;
+      newErrors.firstName = 'First name is required';
     }
 
     if (!formData.lastName.trim()) {
-      newErrors.lastName = validationConfig.messages.required;
+      newErrors.lastName = 'Last name is required';
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = validationConfig.messages.required;
-    } else if (!validationConfig.patterns.email.test(formData.email)) {
-      newErrors.email = validationConfig.messages.invalidEmail;
+      newErrors.email = 'Email is required';
+    } else if (!validationConfig.email.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
 
     if (!formData.password) {
-      newErrors.password = validationConfig.messages.required;
-    } else if (formData.password.length < validationConfig.minPasswordLength) {
-      newErrors.password = validationConfig.messages.passwordTooShort;
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < validationConfig.passwordMinLength) {
+      newErrors.password = `Password must be at least ${validationConfig.passwordMinLength} characters`;
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = validationConfig.messages.confirmPasswordRequired;
+      newErrors.confirmPassword = 'Confirm password is required';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = validationConfig.messages.passwordMismatch;
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     return newErrors;
