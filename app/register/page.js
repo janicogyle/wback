@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styles from './register.module.css';
 import FormInput, { FormSelect } from '../../components/UI/FormInput/FormInput';
 import Button from '../../components/UI/Button/Button';
+import { getAuthConfig, getNavConfig, getValidationConfig } from '../../utils/config';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ export default function Register() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'student',
+    role: getAuthConfig().defaultRole,
   });
 
   const [errors, setErrors] = useState({});
@@ -36,31 +37,32 @@ export default function Register() {
 
   const validateForm = () => {
     const newErrors = {};
+    const validationConfig = getValidationConfig();
 
     if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
+      newErrors.firstName = validationConfig.messages.required;
     }
 
     if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+      newErrors.lastName = validationConfig.messages.required;
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = validationConfig.messages.required;
+    } else if (!validationConfig.patterns.email.test(formData.email)) {
+      newErrors.email = validationConfig.messages.invalidEmail;
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = validationConfig.messages.required;
+    } else if (formData.password.length < validationConfig.minPasswordLength) {
+      newErrors.password = validationConfig.messages.passwordTooShort;
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = validationConfig.messages.confirmPasswordRequired;
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = validationConfig.messages.passwordMismatch;
     }
 
     return newErrors;
@@ -78,8 +80,16 @@ export default function Register() {
     // Placeholder for Firebase Auth logic
     console.log('Registration data:', formData);
     // In a real app, you would call Firebase Auth here
-    // For now, just redirect to the dashboard based on role
-    window.location.href = formData.role === 'student' ? '/dashboard/student' : '/dashboard/graduate';
+    const authConfig = getAuthConfig();
+    const navConfig = getNavConfig();
+    
+    // Set token and role based on selected role
+    const role = formData.role;
+    localStorage.setItem(authConfig.tokenKey, authConfig.tokens[role]);
+    localStorage.setItem(authConfig.userRoleKey, role);
+    
+    // Redirect to the appropriate dashboard
+    window.location.href = navConfig.dashboardRedirects[role];
   };
 
   return (

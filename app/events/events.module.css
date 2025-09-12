@@ -35,8 +35,22 @@
 
 .eventsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .eventsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .eventsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
 }
 
 .eventCard {
@@ -56,8 +70,14 @@
 
 .eventImageContainer {
   position: relative;
-  height: 200px;
+  height: 180px;
   background-color: var(--gray-200);
+}
+
+@media (min-width: 768px) {
+  .eventImageContainer {
+    height: 200px;
+  }
 }
 
 .eventImagePlaceholder {
@@ -150,8 +170,16 @@
 
 .eventActions {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-top: auto;
+}
+
+@media (min-width: 640px) {
+  .eventActions {
+    flex-direction: row;
+    gap: 1rem;
+  }
 }
 
 .detailsButton,
@@ -195,8 +223,20 @@
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
-  .eventsGrid {
-    grid-template-columns: repeat(2, 1fr);
+  .heroSection {
+    padding: 3rem 0;
+  }
+  
+  .heroTitle {
+    font-size: 2.75rem;
+  }
+  
+  .eventsSection {
+    padding: 4rem 0;
+  }
+  
+  .ctaSection {
+    padding: 4rem 0;
   }
 }
 
@@ -205,16 +245,24 @@
     font-size: 2.5rem;
   }
   
-  .eventsGrid {
-    grid-template-columns: 1fr;
+  .heroSubtitle {
+    font-size: 1.125rem;
   }
   
   .ctaTitle {
     font-size: 2rem;
   }
+  
+  .ctaText {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
+  .heroSection {
+    padding: 2.5rem 0;
+  }
+  
   .heroTitle {
     font-size: 2rem;
   }
@@ -223,7 +271,20 @@
     font-size: 1rem;
   }
   
-  .eventActions {
-    flex-direction: column;
+  .eventsSection {
+    padding: 3rem 0;
+  }
+  
+  .eventTitle {
+    font-size: 1.125rem;
+  }
+  
+  .ctaSection {
+    padding: 3rem 0;
+  }
+  
+  .ctaButton {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
   }
 }

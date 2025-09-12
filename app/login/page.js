@@ -4,6 +4,7 @@ import Link from 'next/link';
 import styles from './login.module.css';
 import FormInput from '../../components/UI/FormInput/FormInput';
 import Button from '../../components/UI/Button/Button';
+import { getAuthConfig, getNavConfig, getValidationConfig } from '../../utils/config';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -31,15 +32,16 @@ export default function Login() {
 
   const validateForm = () => {
     const newErrors = {};
+    const validationConfig = getValidationConfig();
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = validationConfig.messages.required;
+    } else if (!validationConfig.patterns.email.test(formData.email)) {
+      newErrors.email = validationConfig.messages.invalidEmail;
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = validationConfig.messages.required;
     }
 
     return newErrors;
@@ -57,8 +59,15 @@ export default function Login() {
     // Placeholder for Firebase Auth logic
     console.log('Login data:', formData);
     // In a real app, you would call Firebase Auth here
-    // For now, just redirect to the student dashboard
-    window.location.href = '/dashboard/student';
+    const authConfig = getAuthConfig();
+    const navConfig = getNavConfig();
+    
+    // For now, just set token and role for student
+    localStorage.setItem(authConfig.tokenKey, authConfig.tokens.student);
+    localStorage.setItem(authConfig.userRoleKey, authConfig.roles.student);
+    
+    // Redirect to the student dashboard
+    window.location.href = navConfig.dashboardRedirects.student;
   };
 
   return (
