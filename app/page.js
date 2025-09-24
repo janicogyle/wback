@@ -28,9 +28,9 @@ export default function Home() {
           </div>
           <div className={styles.heroImage}>
             <Image 
-              src="/globe.svg" 
+              src="/GCLOGO.png" 
               alt="Career opportunities" 
-              width={500} 
+              width={400} 
               height={400} 
               priority
             />

@@ -45,17 +45,17 @@
 
 .heroImage {
   position: absolute;
-  right: 0;
+  right: 100;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-47%);
   max-width: 50%;
   z-index: 0;
-  opacity: 0.8;
+  opacity: 100;
 }
 
 /* Features Section */
 .featuresSection {
-  padding: 5rem 0;
+  padding: 3rem 0 0 0;
   background-color: var(--background);
 }
 
@@ -210,14 +210,25 @@
 }
 
 /* Responsive Styles */
+@media (max-width: 1130px) {
+  .heroImage {
+  position: absolute;
+  right: 100;
+  top: 50%;
+  transform: translateY(-47%);
+  max-width: 30%;
+  z-index: 0;
+  opacity: 100;
+}
+}
+
 @media (max-width: 1024px) {
   .heroTitle {
     font-size: 3rem;
   }
   
   .heroImage {
-    max-width: 45%;
-    opacity: 0.6;
+    display: none;
   }
 }
 

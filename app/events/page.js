@@ -73,7 +73,7 @@ export default function EventsPage() {
 
   return (
     <div className={styles.eventsPage}>
-      {/* Hero Section */}
+      {/* Hero Sech=tion */}
       <section className={styles.heroSection}>
         <div className="container">
           <div className={styles.heroContent}>

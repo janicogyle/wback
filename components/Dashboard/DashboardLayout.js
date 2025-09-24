@@ -83,14 +83,13 @@ export default function DashboardLayout({ children, userType = 'student' }) {
               ☰
             </button>
             <h1 className={styles.pageTitle}>
-              {/* This would be replaced by the actual page title */}
-              Dashboard
+              GCCCS CareerLink
             </h1>
           </div>
           <div className={styles.headerRight}>
             <div className={styles.userInfo}>
-              <span className={styles.userName}>John Doe</span>
-              <div className={styles.userAvatar}>JD</div>
+              <span className={styles.userName}>John Ian</span>
+              <div className={styles.userAvatar}>JI</div>
             </div>
           </div>
         </header>

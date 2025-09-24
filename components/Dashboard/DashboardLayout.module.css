@@ -1,7 +1,6 @@
 .dashboardContainer {
   display: flex;
   min-height: 100vh;
-  padding-top: 4rem; /* Add padding to account for fixed navbar */
 }
 
 /* Sidebar Styles */
@@ -129,7 +128,7 @@
   padding: 1rem 2rem;
   background-color: white;
   border-bottom: 1px solid var(--gray-200);
-  height: 70px;
+  height: 1%;
   position: sticky;
   top: 4rem; /* Position below the fixed navbar */
   z-index: 5;
@@ -176,7 +175,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: var(--primary-color);
+  background-color: orange;
   color: white;
   display: flex;
   align-items: center;

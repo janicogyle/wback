@@ -35,54 +35,35 @@ export default function AboutPage() {
       {/* Team Section */}
       <section className={styles.teamSection}>
         <div className="container">
-          <h2 className={styles.sectionTitle}>Our Team</h2>
-          <div className={styles.teamGrid}>
+          <div className={styles.teamContent}>
+            <h2 className={styles.sectionTitle}>Our Team</h2>
+            <div className={styles.teamGrid}>
+
             {/* Team Member 1 */}
-            <div className={styles.teamMember}>
+            <div className={styles.teamMember} style={{"--animation-order": 1}}>
               <div className={styles.teamMemberImage}>
-                <div className={styles.teamMemberImagePlaceholder}>JD</div>
+                <div className={styles.teamMemberImagePlaceholder}>JG</div>
               </div>
-              <h3 className={styles.teamMemberName}>Jane Doe</h3>
-              <p className={styles.teamMemberRole}>Career Office Director</p>
+              <h3 className={styles.teamMemberName}>Janico Gyle Sorio</h3>
+              <p className={styles.teamMemberRole}>Backend Developer</p>
               <p className={styles.teamMemberBio}>
-                With over 15 years of experience in career counseling and development, Jane leads our team with passion and expertise.
+                Janico leads our team with passion and expertise.
               </p>
             </div>
 
             {/* Team Member 2 */}
-            <div className={styles.teamMember}>
+            <div className={styles.teamMember} style={{"--animation-order": 2}}>
               <div className={styles.teamMemberImage}>
-                <div className={styles.teamMemberImagePlaceholder}>JS</div>
+                <div className={styles.teamMemberImagePlaceholder}>JI</div>
               </div>
-              <h3 className={styles.teamMemberName}>John Smith</h3>
-              <p className={styles.teamMemberRole}>Employer Relations Manager</p>
+              <h3 className={styles.teamMemberName}>John Ian Ormides</h3>
+              <p className={styles.teamMemberRole}>Frontend Developer</p>
               <p className={styles.teamMemberBio}>
                 John builds and maintains relationships with employers to create opportunities for our students and graduates.
               </p>
             </div>
 
-            {/* Team Member 3 */}
-            <div className={styles.teamMember}>
-              <div className={styles.teamMemberImage}>
-                <div className={styles.teamMemberImagePlaceholder}>MR</div>
-              </div>
-              <h3 className={styles.teamMemberName}>Maria Rodriguez</h3>
-              <p className={styles.teamMemberRole}>Career Counselor</p>
-              <p className={styles.teamMemberBio}>
-                Maria specializes in helping students identify their strengths and align them with suitable career paths.
-              </p>
-            </div>
-
-            {/* Team Member 4 */}
-            <div className={styles.teamMember}>
-              <div className={styles.teamMemberImage}>
-                <div className={styles.teamMemberImagePlaceholder}>DK</div>
-              </div>
-              <h3 className={styles.teamMemberName}>David Kim</h3>
-              <p className={styles.teamMemberRole}>Events Coordinator</p>
-              <p className={styles.teamMemberBio}>
-                David organizes career fairs, workshops, and networking events to connect students with industry professionals.
-              </p>
+            
             </div>
           </div>
         </div>
@@ -94,7 +75,7 @@ export default function AboutPage() {
           <h2 className={styles.sectionTitle}>Our Services</h2>
           <div className={styles.servicesGrid}>
             {/* Service 1 */}
-            <div className={styles.serviceCard}>
+            <div className={styles.serviceCard} style={{"--animation-order": 1}}>
               <div className={styles.serviceIcon}>📝</div>
               <h3 className={styles.serviceTitle}>Career Counseling</h3>
               <p className={styles.serviceDescription}>
@@ -103,7 +84,7 @@ export default function AboutPage() {
             </div>
 
             {/* Service 2 */}
-            <div className={styles.serviceCard}>
+            <div className={styles.serviceCard} style={{"--animation-order": 2}}>
               <div className={styles.serviceIcon}>💼</div>
               <h3 className={styles.serviceTitle}>Job Placement</h3>
               <p className={styles.serviceDescription}>
@@ -112,7 +93,7 @@ export default function AboutPage() {
             </div>
 
             {/* Service 3 */}
-            <div className={styles.serviceCard}>
+            <div className={styles.serviceCard} style={{"--animation-order": 3}}>
               <div className={styles.serviceIcon}>📚</div>
               <h3 className={styles.serviceTitle}>Resource Library</h3>
               <p className={styles.serviceDescription}>
@@ -141,25 +122,25 @@ export default function AboutPage() {
               Have questions or need assistance? Our team is here to help you navigate your career journey.
             </p>
             <div className={styles.contactInfo}>
-              <div className={styles.contactItem}>
+              <div className={styles.contactItem} style={{"--animation-order": 1}}>
                 <span className={styles.contactIcon}>📍</span>
                 <span>Gordon College, Olongapo City, Philippines</span>
               </div>
-              <div className={styles.contactItem}>
+              <div className={styles.contactItem} style={{"--animation-order": 2}}>
                 <span className={styles.contactIcon}>📞</span>
                 <span>+63 (47) 123-4567</span>
               </div>
-              <div className={styles.contactItem}>
+              <div className={styles.contactItem} style={{"--animation-order": 3}}>
                 <span className={styles.contactIcon}>✉️</span>
                 <span>careers@gcccs.edu.ph</span>
               </div>
-              <div className={styles.contactItem}>
+              <div className={styles.contactItem} style={{"--animation-order": 4}}>
                 <span className={styles.contactIcon}>🕒</span>
                 <span>Monday - Friday: 8:00 AM - 5:00 PM</span>
               </div>
             </div>
             <div className={styles.contactCta}>
-              <Link href="/contact" className="btn btn-primary">
+              <Link href="/contact">
                 Get in Touch
               </Link>
             </div>
