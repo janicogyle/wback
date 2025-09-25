@@ -13,14 +13,14 @@ export default function StudentProfile() {
   const [formData, setFormData] = useState({
     // Personal Information
     firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    phone: '(123) 456-7890',
-    dateOfBirth: '1998-05-15',
-    address: '123 Campus Drive',
-    city: 'College Town',
-    state: 'CA',
-    zipCode: '90210',
+    lastName: 'ian',
+    email: 'johnian@google.com',
+    phone: '09304433316',
+    dateOfBirth: '2005-04-02',
+    address: 'Asinan Olongapo city',
+    city: 'Olongapo',
+    state: 'Zambales',
+    zipCode: '2200',
     
     // Education
     degree: 'Bachelor of Science',
@@ -82,7 +82,7 @@ export default function StudentProfile() {
           <Card>
             <div className={styles.profileCard}>
               <div className={styles.profileAvatar}>
-                <span>JD</span>
+                <span>JI</span>
               </div>
               <h2 className={styles.profileName}>{formData.firstName} {formData.lastName}</h2>
               <p className={styles.profileMajor}>{formData.major}</p>

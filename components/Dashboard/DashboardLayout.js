@@ -89,7 +89,7 @@ export default function DashboardLayout({ children, userType = 'student' }) {
           <div className={styles.headerRight}>
             <div className={styles.userInfo}>
               <span className={styles.userName}>John Ian</span>
-              <div className={styles.userAvatar}>JI</div>
+              <div className={styles.userAvatar}>J</div>
             </div>
           </div>
         </header>
