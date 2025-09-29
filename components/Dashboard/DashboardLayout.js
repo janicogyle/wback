@@ -1,13 +1,37 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './DashboardLayout.module.css';
 
 export default function DashboardLayout({ children, userType = 'student' }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setIsSidebarOpen(true); // Always open on desktop
+      } else {
+        setIsSidebarOpen(false); // Closed by default on mobile
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+    if (isMobile) {
+      setIsSidebarOpen((prev) => !prev);
+    } else {
+      setIsSidebarOpen((prev) => !prev);
+    }
+  };
+
+  const handleNavClick = () => {
+    if (isMobile) setIsSidebarOpen(false);
   };
 
   // Define navigation links based on user type
@@ -30,25 +54,43 @@ export default function DashboardLayout({ children, userType = 'student' }) {
   return (
     <div className={styles.dashboardContainer}>
       {/* Sidebar */}
-      <aside className={`${styles.sidebar} ${isSidebarOpen ? '' : styles.collapsed}`}>
+      <aside
+        className={
+          styles.sidebar +
+          (isMobile
+            ? (isSidebarOpen ? ' ' + styles.open : ' ' + styles.collapsed)
+            : (isSidebarOpen ? '' : ' ' + styles.collapsed))
+        }
+      >
         <div className={styles.sidebarHeader}>
           <h2 className={styles.sidebarTitle}>
             {userType === 'career-office' ? 'Career Office' : 'Student Portal'}
           </h2>
-          <button 
-            className={styles.sidebarToggle} 
-            onClick={toggleSidebar}
-            aria-label={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-          >
-            {isSidebarOpen ? '◀' : '▶'}
-          </button>
+          {!isMobile && (
+            <button
+              className={styles.sidebarToggle}
+              onClick={toggleSidebar}
+              aria-label={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            >
+              {isSidebarOpen ? '◀' : '▶'}
+            </button>
+          )}
+          {isMobile && (
+            <button
+              className={styles.sidebarCloseButton}
+              onClick={() => setIsSidebarOpen(false)}
+              aria-label="Close menu"
+              type="button"
+            >
+              ×
+            </button>
+          )}
         </div>
-
         <nav className={styles.sidebarNav}>
           <ul className={styles.navList}>
             {navLinks.map((link) => (
               <li key={link.href} className={styles.navItem}>
-                <Link href={link.href} className={styles.navLink}>
+                <Link href={link.href} className={styles.navLink} onClick={handleNavClick}>
                   <span className={styles.navIcon}>{link.icon}</span>
                   {isSidebarOpen && <span className={styles.navLabel}>{link.label}</span>}
                 </Link>
@@ -56,13 +98,27 @@ export default function DashboardLayout({ children, userType = 'student' }) {
             ))}
           </ul>
         </nav>
-
         <div className={styles.sidebarFooter}>
-          <Link href="/logout" className={styles.navLink}>
+          <Link href="/logout" className={styles.navLink} onClick={handleNavClick}>
             {isSidebarOpen ? <span className={styles.navLabel}>Logout</span> : <span className={styles.navLabelCollapsed}>Logout</span>}
           </Link>
         </div>
       </aside>
+      {/* Overlay for mobile */}
+      {isMobile && isSidebarOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(0,0,0,0.3)',
+            zIndex: 999,
+          }}
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
       {/* Main content */}
       <main className={styles.mainContent}>
