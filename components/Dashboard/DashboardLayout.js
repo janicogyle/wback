@@ -26,7 +26,6 @@ export default function DashboardLayout({ children, userType = 'student' }) {
         { href: '/dashboard/career-office/students', label: 'Student Profiles', icon: '👥' },
         { href: '/dashboard/career-office/events', label: 'Manage Events', icon: '📅' },
         { href: '/dashboard/career-office/reports', label: 'Reports', icon: '📈' },
-        { href: '/dashboard/career-office/settings', label: 'Settings', icon: '⚙️' },
       ];
 
   return (

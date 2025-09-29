@@ -10,14 +10,14 @@
   --dark-color: #343a40;
   --border-color: #dee2e6;
   --card-bg: #ffffff;
-  --body-bg: #f5f7fb;
+  --body-bg: #ffffff;
 }
 
 .dashboardContainer {
-  padding: 1.5rem;
+  padding: 1rem;
   background-color: var(--body-bg);
   min-height: 100vh;
-  padding-top: 5.5rem; /* Increased padding to account for fixed navbar and dashboard header */
+  padding-top: 0rem; /* Increased padding to account for fixed navbar and dashboard header */
 }
 
 .dashboardHeader {

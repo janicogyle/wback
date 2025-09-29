@@ -106,13 +106,7 @@ export default function CareerOfficeLogin() {
               error={errors.password}
             />
 
-            <div className={styles.forgotPassword}>
-              <Link href="/forgot-password" className={styles.forgotLink}>
-                Forgot password?
-              </Link>
-            </div>
-
-            <Button type="submit" variant="primary" fullWidth>
+            <Button type="submit" variant="primary" fullWidth className={styles.loginButton}>
               Login
             </Button>
           </form>
