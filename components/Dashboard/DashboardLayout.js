@@ -13,19 +13,19 @@ export default function DashboardLayout({ children, userType = 'student' }) {
   // Define navigation links based on user type
   const navLinks = userType === 'student' || userType === 'graduate' 
     ? [
-        { href: '/dashboard/student', label: 'Dashboard', icon: '📊' },
+        { href: '/dashboard/student', label: 'Dashboard', icon: '⚡' },
         { href: '/dashboard/student/profile', label: 'My Profile', icon: '👤' },
-        { href: '/dashboard/student/jobs', label: 'Job Listings', icon: '💼' },
-        { href: '/dashboard/student/applications', label: 'My Applications', icon: '📝' },
-        { href: '/dashboard/student/events', label: 'Events', icon: '📅' },
-        { href: '/dashboard/student/resources', label: 'Career Resources', icon: '📚' },
+        { href: '/dashboard/student/jobs', label: 'Job Listings', icon: '🔍' },
+        { href: '/dashboard/student/applications', label: 'My Applications', icon: '📋' },
+        { href: '/dashboard/student/events', label: 'Events', icon: '🗓️' },
+        { href: '/dashboard/student/resources', label: 'Career Resources', icon: '📘' },
       ]
     : [
-        { href: '/dashboard/career-office', label: 'Dashboard', icon: '📊' },
-        { href: '/dashboard/career-office/jobs', label: 'Manage Jobs', icon: '💼' },
-        { href: '/dashboard/career-office/students', label: 'Student Profiles', icon: '👥' },
-        { href: '/dashboard/career-office/events', label: 'Manage Events', icon: '📅' },
-        { href: '/dashboard/career-office/reports', label: 'Reports', icon: '📈' },
+        { href: '/dashboard/career-office', label: 'Dashboard', icon: '⚡' },
+        { href: '/dashboard/career-office/jobs', label: 'Manage Jobs', icon: '💻' },
+        { href: '/dashboard/career-office/students', label: 'Student Profiles', icon: '🎓' },
+        { href: '/dashboard/career-office/events', label: 'Manage Events', icon: '🗓️' },
+        { href: '/dashboard/career-office/reports', label: 'Reports', icon: '📊' },
       ];
 
   return (
@@ -59,11 +59,7 @@ export default function DashboardLayout({ children, userType = 'student' }) {
         </nav>
 
         <div className={styles.sidebarFooter}>
-          <Link href="/" className={styles.navLink}>
-            <span className={styles.navIcon}>🏠</span>
-            {isSidebarOpen && <span className={styles.navLabel}>Home</span>}
-          </Link>
-          <Link href="/logout" className={styles.navLink}>
+          <Link href="/logout" className={`${styles.navLink} ${styles.logoutLink}`}>
             <span className={styles.navIcon}>🚪</span>
             {isSidebarOpen && <span className={styles.navLabel}>Logout</span>}
           </Link>

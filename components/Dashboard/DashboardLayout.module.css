@@ -105,7 +105,15 @@
   padding: 1rem;
   border-top: 1px solid var(--gray-800);
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+}
+
+.logoutLink {
+  padding: 0.75rem 1rem;
+}
+
+.sidebar.collapsed .sidebarFooter {
+  padding: 1rem 0;
 }
 
 /* Main Content Styles */
