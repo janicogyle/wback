@@ -66,6 +66,18 @@ const getAppConfig = () => getConfig('app');
  */
 const getValidationConfig = () => getConfig('validation');
 
+/**
+ * Shared logout function for both Navbar and Dashboard
+ */
+const logout = () => {
+  if (typeof window !== 'undefined') {
+    const authConfig = getAuthConfig();
+    localStorage.removeItem(authConfig.tokenKey);
+    localStorage.removeItem(authConfig.userRoleKey);
+    window.location.href = '/';
+  }
+};
+
 // Export all configuration functions
 module.exports = {
   getConfig,
@@ -73,5 +85,6 @@ module.exports = {
   getNavConfig,
   getUIConfig,
   getAppConfig,
-  getValidationConfig
+  getValidationConfig,
+  logout
 };

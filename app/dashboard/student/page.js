@@ -72,9 +72,7 @@ export default function StudentDashboard() {
                         <p className={styles.applicationCompany}>{app.company}</p>
                       </div>
                       <div className={styles.applicationMeta}>
-                        <span className={`${styles.applicationStatus} ${styles[app.status.toLowerCase()]}`}>
-                          {app.status}
-                        </span>
+                        <span className={`${styles.applicationStatus} ${styles[app.status.toLowerCase()]}`}>{app.status}</span>
                         <span className={styles.applicationDate}>{app.date}</span>
                       </div>
                     </li>
@@ -103,10 +101,8 @@ export default function StudentDashboard() {
                     <Link href={`/jobs/${job.id}`} className={styles.jobLink}>
                       <h3 className={styles.jobTitle}>{job.title}</h3>
                       <p className={styles.jobCompany}>{job.company}</p>
-                      <div className={styles.jobMeta}>
-                        <span className={styles.jobLocation}>{job.location}</span>
-                        <span className={styles.jobDate}>Posted: {job.postedDate}</span>
-                      </div>
+                      <span className={styles.jobLocation}>{job.location}</span>
+                      <span className={styles.jobPostedDate}>{job.postedDate}</span>
                     </Link>
                   </li>
                 ))}
@@ -115,7 +111,7 @@ export default function StudentDashboard() {
           </Card>
         </section>
 
-        {/* Upcoming Events */}
+        {/* Events */}
         <section className={styles.eventsSection}>
           <Card>
             <CardHeader>
@@ -128,43 +124,11 @@ export default function StudentDashboard() {
               <ul className={styles.eventsList}>
                 {upcomingEvents.map((event) => (
                   <li key={event.id} className={styles.eventItem}>
-                    <div className={styles.eventDate}>
-                      <span className={styles.eventDay}>
-                        {new Date(event.date).getDate()}
-                      </span>
-                      <span className={styles.eventMonth}>
-                        {new Date(event.date).toLocaleString('default', { month: 'short' })}
-                      </span>
-                    </div>
                     <div className={styles.eventInfo}>
                       <h3 className={styles.eventTitle}>{event.title}</h3>
                       <p className={styles.eventTime}>{event.time}</p>
                       <p className={styles.eventLocation}>{event.location}</p>
                     </div>
-                  </li>
-                ))}
-              </ul>
-            </CardBody>
-          </Card>
-        </section>
-
-        {/* Career Tips */}
-        <section className={styles.tipsSection}>
-          <Card>
-            <CardHeader>
-              <h2 className={styles.sectionTitle}>Career Tips</h2>
-              <Link href="/dashboard/student/resources" className={styles.viewAllLink}>
-                View All
-              </Link>
-            </CardHeader>
-            <CardBody>
-              <ul className={styles.tipsList}>
-                {careerTips.map((tip) => (
-                  <li key={tip.id} className={styles.tipItem}>
-                    <Link href={`/resources/${tip.id}`} className={styles.tipLink}>
-                      <span className={styles.tipCategory}>{tip.category}</span>
-                      <h3 className={styles.tipTitle}>{tip.title}</h3>
-                    </Link>
                   </li>
                 ))}
               </ul>

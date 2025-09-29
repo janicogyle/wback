@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import styles from './Navbar.module.css';
-import { getAuthConfig, getNavConfig } from '../../utils/config';
+import { getAuthConfig, getNavConfig, logout } from '../../utils/config';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -56,16 +56,16 @@ export default function Navbar() {
   }, [isMenuOpen]);
   
   // Handle logout
-  const handleLogout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(authConfig.tokenKey);
-      localStorage.removeItem(authConfig.userRoleKey);
-      setIsLoggedIn(false);
-      setUserRole(authConfig.defaultRole);
-      setIsMenuOpen(false);
-      router.push('/');
-    }
-  };
+  // const handleLogout = () => {
+  //   if (typeof window !== 'undefined') {
+  //     localStorage.removeItem(authConfig.tokenKey);
+  //     localStorage.removeItem(authConfig.userRoleKey);
+  //     setIsLoggedIn(false);
+  //     setUserRole(authConfig.defaultRole);
+  //     setIsMenuOpen(false);
+  //     router.push('/');
+  //   }
+  // };
 
   return (
     <nav className={styles.navbar}>
@@ -108,7 +108,7 @@ export default function Navbar() {
                 <Link key={index} href={link.path} className={styles.navLink}>{link.name}</Link>
               ))}
               <div className={styles.authButtons}>
-                <button onClick={handleLogout} className={`btn btn-secondary ${styles.logoutBtn}`}>Logout</button>
+                <button onClick={logout} className={`btn btn-secondary ${styles.logoutBtn}`}>Logout</button>
               </div>
             </>
           )}

@@ -18,7 +18,6 @@ export default function DashboardLayout({ children, userType = 'student' }) {
         { href: '/dashboard/student/jobs', label: 'Job Listings', icon: '🔍' },
         { href: '/dashboard/student/applications', label: 'My Applications', icon: '📋' },
         { href: '/dashboard/student/events', label: 'Events', icon: '🗓️' },
-        { href: '/dashboard/student/resources', label: 'Career Resources', icon: '📘' },
       ]
     : [
         { href: '/dashboard/career-office', label: 'Dashboard', icon: '⚡' },
@@ -59,9 +58,8 @@ export default function DashboardLayout({ children, userType = 'student' }) {
         </nav>
 
         <div className={styles.sidebarFooter}>
-          <Link href="/logout" className={`${styles.navLink} ${styles.logoutLink}`}>
-            <span className={styles.navIcon}>🚪</span>
-            {isSidebarOpen && <span className={styles.navLabel}>Logout</span>}
+          <Link href="/logout" className={styles.navLink}>
+            {isSidebarOpen ? <span className={styles.navLabel}>Logout</span> : <span className={styles.navLabelCollapsed}>Logout</span>}
           </Link>
         </div>
       </aside>
