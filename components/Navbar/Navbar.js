@@ -27,9 +27,10 @@ export default function Navbar() {
       setUserRole(role || authConfig.defaultRole);
       
       // Redirect if student tries to access career office pages
-      if (role === authConfig.roles.student && pathname.includes('/career-office')) {
-        router.push(navConfig.dashboardRedirects.student);
-      }
+      // Remove this block from the useEffect in Navbar:
+      // if (role === authConfig.roles.student && pathname.includes('/career-office')) {
+      //   router.push(navConfig.dashboardRedirects.student);
+      // }
     }
   }, [pathname, router, authConfig, navConfig]);
 

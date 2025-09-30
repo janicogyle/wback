@@ -2,8 +2,11 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/Dashboard/DashboardLayout';
 import styles from './reports.module.css';
+import { useRouter } from 'next/navigation';
+import { getAuthConfig, getNavConfig } from '../../../../utils/config';
 
 export default function ReportsPage() {
+  const router = useRouter();
   const [selectedReport, setSelectedReport] = useState('all');
   const [activeTab, setActiveTab] = useState('students');
   const [filteredReports, setFilteredReports] = useState([]);
@@ -21,6 +24,24 @@ export default function ReportsPage() {
     { id: 2, name: 'Job Posting Analytics', date: '2023-06-15', status: 'Complete', type: 'employer' },
     { id: 3, name: 'Recruitment Drive Summary', date: '2023-07-05', status: 'Pending', type: 'employer' },
   ];
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const authConfig = getAuthConfig();
+      const navConfig = getNavConfig();
+      const role = localStorage.getItem(authConfig.userRoleKey);
+      // Only allow career office users
+      if (role !== authConfig.roles.careerOffice) {
+        if (role === authConfig.roles.student) {
+          router.push(navConfig.dashboardRedirects.student);
+        } else if (role === authConfig.roles.graduate) {
+          router.push(navConfig.dashboardRedirects.graduate);
+        } else {
+          router.push('/login');
+        }
+      }
+    }
+  }, [router]);
 
   // Filter reports based on selection
   useEffect(() => {
@@ -103,7 +124,7 @@ export default function ReportsPage() {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout userType="career-office">
       <div className={styles.reportsContainer}>
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>Reports</h1>
