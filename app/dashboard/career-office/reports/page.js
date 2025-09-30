@@ -108,87 +108,88 @@ export default function ReportsPage() {
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>Reports</h1>
           <div className={styles.reportControls}>
-          <select 
-            className={styles.reportSelect}
-            value={selectedReport}
-            onChange={(e) => setSelectedReport(e.target.value)}
-          >
-            <option value="all">All Reports</option>
-            <option value="placement">Placement Reports</option>
-            <option value="internship">Internship Reports</option>
-            <option value="employer">Employer Reports</option>
-          </select>
+            <select 
+              className={styles.reportSelect}
+              value={selectedReport}
+              onChange={(e) => setSelectedReport(e.target.value)}
+            >
+              <option value="all">All Reports</option>
+              <option value="placement">Placement Reports</option>
+              <option value="internship">Internship Reports</option>
+              <option value="employer">Employer Reports</option>
+            </select>
+            <button 
+              className={styles.exportButton}
+              onClick={handleExport}
+              disabled={isExporting || filteredReports.length === 0}
+            >
+              {isExporting ? 'Exporting...' : 'Export'}
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.tabsContainer}>
           <button 
-            className={styles.exportButton}
-            onClick={handleExport}
-            disabled={isExporting || filteredReports.length === 0}
+            className={`${styles.tabButton} ${activeTab === 'students' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('students')}
           >
-            {isExporting ? 'Exporting...' : 'Export'}
+            Student Reports
+          </button>
+          <button 
+            className={`${styles.tabButton} ${activeTab === 'employers' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('employers')}
+          >
+            Employer Reports
           </button>
         </div>
-      </div>
 
-      <div className={styles.tabsContainer}>
-        <button 
-          className={`${styles.tabButton} ${activeTab === 'students' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('students')}
-        >
-          Student Reports
-        </button>
-        <button 
-          className={`${styles.tabButton} ${activeTab === 'employers' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('employers')}
-        >
-          Employer Reports
-        </button>
-      </div>
-
-      <div className={styles.reportsTable}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Report Name</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredReports.length > 0 ? (
-              filteredReports.map((report) => (
-                <tr key={report.id}>
-                  <td>{report.name}</td>
-                  <td>{report.date}</td>
-                  <td>
-                    <span className={`${styles.status} ${report.status === 'Complete' ? styles.statusComplete : styles.statusPending}`}>
-                      {report.status}
-                    </span>
-                  </td>
-                  <td>
-                    <button 
-                      className={styles.viewButton}
-                      onClick={() => handleViewReport(report.id)}
-                    >
-                      View
-                    </button>
-                    <button 
-                      className={styles.downloadButton}
-                      onClick={() => handleDownloadReport(report.id)}
-                    >
-                      Download
-                    </button>
+        <div className={styles.reportsTable}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Report Name</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredReports.length > 0 ? (
+                filteredReports.map((report) => (
+                  <tr key={report.id}>
+                    <td>{report.name}</td>
+                    <td>{report.date}</td>
+                    <td>
+                      <span className={`${styles.status} ${report.status === 'Complete' ? styles.statusComplete : styles.statusPending}`}>
+                        {report.status}
+                      </span>
+                    </td>
+                    <td>
+                      <button 
+                        className={styles.viewButton}
+                        onClick={() => handleViewReport(report.id)}
+                      >
+                        View
+                      </button>
+                      <button 
+                        className={styles.downloadButton}
+                        onClick={() => handleDownloadReport(report.id)}
+                      >
+                        Download
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className={styles.noReports}>
+                    No reports found for the selected filter.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className={styles.noReports}>
-                  No reports found for the selected filter.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </DashboardLayout>
   );
