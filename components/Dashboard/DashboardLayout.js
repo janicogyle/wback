@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './DashboardLayout.module.css';
+import { logout } from '../../utils/config';
 
 export default function DashboardLayout({ children, userType = 'student' }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -32,6 +33,11 @@ export default function DashboardLayout({ children, userType = 'student' }) {
 
   const handleNavClick = () => {
     if (isMobile) setIsSidebarOpen(false);
+  };
+  
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
   };
 
   // Define navigation links based on user type
@@ -99,9 +105,9 @@ export default function DashboardLayout({ children, userType = 'student' }) {
           </ul>
         </nav>
         <div className={styles.sidebarFooter}>
-          <Link href="/logout" className={styles.navLink} onClick={handleNavClick}>
+          <button className={styles.navLink} onClick={handleLogout}>
             {isSidebarOpen ? <span className={styles.navLabel}>Logout</span> : <span className={styles.navLabelCollapsed}>Logout</span>}
-          </Link>
+          </button>
         </div>
       </aside>
       {/* Overlay for mobile */}
