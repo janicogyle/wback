@@ -1,66 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/Dashboard/DashboardLayout';
 import styles from './applications.module.css';
 
 export default function ApplicationsPage() {
-  // Mock data for applications
-  const [applications, setApplications] = useState([
-    {
-      id: 1,
-      jobTitle: 'Frontend Developer',
-      company: 'TechCorp Inc.',
-      status: 'Applied',
-      date: '2023-10-15',
-      logo: '/images/companies/techcorp.svg',
-      notes: 'Applied through company website. Waiting for response.',
-    },
-    {
-      id: 2,
-      jobTitle: 'UX Designer',
-      company: 'Creative Solutions',
-      status: 'Interview',
-      date: '2023-10-10',
-      logo: '/images/companies/creative.svg',
-      notes: 'First interview scheduled for Oct 25th at 2:00 PM.',
-      interviewDate: '2023-10-25T14:00:00',
-    },
-    {
-      id: 3,
-      jobTitle: 'Data Analyst',
-      company: 'DataViz Corp',
-      status: 'Rejected',
-      date: '2023-09-28',
-      logo: '/images/companies/dataviz.svg',
-      notes: 'Received rejection email on Oct 12th. They mentioned lack of experience with their specific tools.',
-      rejectionReason: 'Lack of experience with required tools',
-    },
-    {
-      id: 4,
-      jobTitle: 'Full Stack Developer',
-      company: 'WebSolutions Ltd',
-      status: 'Offer',
-      date: '2023-09-20',
-      logo: '/images/companies/websolutions.svg',
-      notes: 'Received offer on Oct 15th. Need to respond by Oct 25th.',
-      offerDetails: {
-        salary: '$75,000',
-        benefits: 'Health insurance, 401k, 20 days PTO',
-        startDate: '2023-11-15',
-      },
-    },
-    {
-      id: 5,
-      jobTitle: 'Product Manager',
-      company: 'InnovateTech',
-      status: 'Assessment',
-      date: '2023-10-05',
-      logo: '/images/companies/innovate.svg',
-      notes: 'Completed online assessment on Oct 10th. Waiting for results.',
-      assessmentDeadline: '2023-10-10',
-    },
-  ]);
+  const [applications, setApplications] = useState([]);
+
+  // Fetch persisted applications
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/applications')
+      .then(r => r.json())
+      .then(data => { if (!mounted) setApplications(data); })
+      .catch(() => {});
+    return () => { mounted = false };
+  }, []);
 
   // Filter states
   const [statusFilter, setStatusFilter] = useState('All');

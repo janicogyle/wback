@@ -6,71 +6,24 @@ import Card from '../../../../components/UI/Card/Card';
 import Button from '../../../../components/UI/Button/Button';
 import FormInput from '../../../../components/UI/FormInput/FormInput';
 import styles from './jobs.module.css';
+import { useEffect } from 'react';
 
 export default function JobsPage() {
-  // Mock data for jobs
-  const jobsData = [
-    {
-      id: 1,
-      title: 'Frontend Developer',
-      company: 'Tech Solutions Inc.',
-      location: 'Remote',
-      type: 'Full-time',
-      salary: '20,000 - 30,000',
-      description: 'We are looking for a Frontend Developer proficient in React.js to join our team...',
-      requirements: ['2+ years of experience with React', 'Strong JavaScript skills', 'Experience with RESTful APIs'],
-      postedDate: '2023-06-15',
-      deadline: '2023-07-15',
-    },
-    {
-      id: 2,
-      title: 'UX Designer',
-      company: 'Creative Designs',
-      location: 'New York',
-      type: 'Full-time',
-      salary: '45,000 - 55,000',
-      description: 'Creative Designs is seeking a talented UX Designer to create amazing user experiences...',
-      requirements: ['Portfolio showcasing UX work', 'Experience with Figma or Sketch', 'Understanding of user research'],
-      postedDate: '2023-06-14',
-      deadline: '2023-07-10',
-    },
-    {
-      id: 3,
-      title: 'Data Analyst',
-      company: 'Data Insights',
-      location: 'Chicago',
-      type: 'Full-time',
-      salary: '60,000 - 80,000',
-      description: 'Join our data team to analyze and interpret complex data sets...',
-      requirements: ['SQL proficiency', 'Experience with data visualization tools', 'Statistical analysis skills'],
-      postedDate: '2023-06-13',
-      deadline: '2023-07-13',
-    },
-    {
-      id: 4,
-      title: 'Software Engineering Intern',
-      company: 'StartUp Tech',
-      location: 'Remote',
-      type: 'Internship',
-      salary: '250/hour',
-      description: 'Great opportunity for students to gain hands-on experience in software development...',
-      requirements: ['Currently pursuing CS degree', 'Basic programming knowledge', 'Eager to learn'],
-      postedDate: '2023-06-12',
-      deadline: '2023-06-30',
-    },
-    {
-      id: 5,
-      title: 'Backend Developer',
-      company: 'Server Solutions',
-      location: 'San Francisco',
-      type: 'Full-time',
-      salary: '80,000 - 100,000',
-      description: 'Experienced backend developer needed to build robust server-side applications...',
-      requirements: ['Node.js expertise', 'Database design skills', 'API development experience'],
-      postedDate: '2023-06-10',
-      deadline: '2023-07-10',
-    },
-  ];
+  // Use shared jobs posted by career-office; adapt field names where necessary
+  // Map shared `posted` -> `postedDate` to match this page's expectations
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/jobs')
+      .then(r => r.json())
+      .then(data => {
+        if (!mounted) return;
+        setJobs(data.map(j => ({ ...j, postedDate: j.posted || j.postedDate || '' })));
+      })
+      .catch(() => {});
+    return () => { mounted = false };
+  }, []);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
@@ -79,7 +32,7 @@ export default function JobsPage() {
   });
 
   // Filter jobs based on search term and filters
-  const filteredJobs = jobsData.filter((job) => {
+  const filteredJobs = jobs.filter((job) => {
     const matchesSearch = 
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -92,8 +45,8 @@ export default function JobsPage() {
   });
 
   // Get unique job types and locations for filter options
-  const jobTypes = [...new Set(jobsData.map(job => job.type))];
-  const locations = [...new Set(jobsData.map(job => job.location))];
+  const jobTypes = [...new Set(jobs.map(job => job.type))];
+  const locations = [...new Set(jobs.map(job => job.location))];
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);

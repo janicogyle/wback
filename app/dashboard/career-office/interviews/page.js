@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import DashboardLayout from '@/components/DashboardLayout';
+import DashboardLayout from '@/components/Dashboard/DashboardLayout';
 import styles from './interviews.module.css';
 
 export default function InterviewsPage() {

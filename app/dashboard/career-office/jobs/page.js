@@ -1,136 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/Dashboard/DashboardLayout';
 import styles from './jobs.module.css';
+import Toast from '@/components/UI/Toast/Toast';
+import JobForm from '@/components/Career/JobForm';
 
 export default function CareerOfficeJobs() {
-  // Mock data for jobs
-  const initialJobs = [
-    {
-      id: 1,
-      title: 'Frontend Developer',
-      company: 'TechCorp Inc.',
-      location: 'San Francisco, CA (Remote)',
-      type: 'Full-time',
-      salary: '$80,000 - $110,000',
-      posted: '2023-10-15',
-      deadline: '2023-11-15',
-      status: 'Active',
-      applications: 12,
-      description: 'TechCorp is seeking a talented Frontend Developer to join our growing team...',
-      requirements: ['3+ years of experience with React', 'Strong JavaScript skills', 'Experience with responsive design'],
-      featured: true
-    },
-    {
-      id: 2,
-      title: 'UX Designer',
-      company: 'Creative Solutions',
-      location: 'New York, NY (On-site)',
-      type: 'Full-time',
-      salary: '$75,000 - $95,000',
-      posted: '2023-10-14',
-      deadline: '2023-11-14',
-      status: 'Active',
-      applications: 8,
-      description: 'Creative Solutions is looking for a UX Designer to create amazing user experiences...',
-      requirements: ['Portfolio demonstrating UX work', 'Experience with Figma or Sketch', 'User research skills'],
-      featured: true
-    },
-    {
-      id: 3,
-      title: 'Data Analyst',
-      company: 'DataViz Corp',
-      location: 'Chicago, IL (Hybrid)',
-      type: 'Full-time',
-      salary: '$65,000 - $85,000',
-      posted: '2023-10-13',
-      deadline: '2023-11-13',
-      status: 'Active',
-      applications: 5,
-      description: 'DataViz Corp needs a Data Analyst to help interpret complex data sets...',
-      requirements: ['SQL proficiency', 'Experience with data visualization tools', 'Statistical analysis background'],
-      featured: false
-    },
-    {
-      id: 4,
-      title: 'Full Stack Developer',
-      company: 'WebSolutions Ltd',
-      location: 'Austin, TX (Remote)',
-      type: 'Contract',
-      salary: '$50-70/hour',
-      posted: '2023-10-12',
-      deadline: '2023-11-12',
-      status: 'Active',
-      applications: 15,
-      description: 'WebSolutions is hiring a Full Stack Developer for a 6-month contract with possibility of extension...',
-      requirements: ['Node.js and React experience', 'Database design skills', 'API development'],
-      featured: false
-    },
-    {
-      id: 5,
-      title: 'Marketing Specialist',
-      company: 'BrandBoost Agency',
-      location: 'Miami, FL (On-site)',
-      type: 'Part-time',
-      salary: '$25-35/hour',
-      posted: '2023-10-11',
-      deadline: '2023-11-11',
-      status: 'Active',
-      applications: 7,
-      description: 'BrandBoost Agency is seeking a part-time Marketing Specialist to support our campaigns...',
-      requirements: ['Digital marketing experience', 'Social media management', 'Content creation skills'],
-      featured: false
-    },
-    {
-      id: 6,
-      title: 'Product Manager',
-      company: 'InnovateTech',
-      location: 'Seattle, WA (Hybrid)',
-      type: 'Full-time',
-      salary: '$90,000 - $120,000',
-      posted: '2023-10-10',
-      deadline: '2023-11-10',
-      status: 'Active',
-      applications: 10,
-      description: 'InnovateTech is looking for an experienced Product Manager to lead our product development...',
-      requirements: ['3+ years in product management', 'Agile methodology experience', 'Technical background preferred'],
-      featured: true
-    },
-    {
-      id: 7,
-      title: 'DevOps Engineer',
-      company: 'CloudSys Solutions',
-      location: 'Remote',
-      type: 'Full-time',
-      salary: '$85,000 - $115,000',
-      posted: '2023-10-09',
-      deadline: '2023-11-09',
-      status: 'Closed',
-      applications: 6,
-      description: 'CloudSys Solutions needs a DevOps Engineer to improve our infrastructure and deployment processes...',
-      requirements: ['AWS/Azure experience', 'CI/CD pipeline knowledge', 'Infrastructure as code'],
-      featured: false
-    },
-    {
-      id: 8,
-      title: 'Content Writer',
-      company: 'MediaPulse',
-      location: 'Boston, MA (Remote)',
-      type: 'Freelance',
-      salary: '$40-50/hour',
-      posted: '2023-10-08',
-      deadline: '2023-11-08',
-      status: 'Draft',
-      applications: 0,
-      description: 'MediaPulse is seeking freelance Content Writers to create engaging content for our clients...',
-      requirements: ['Strong writing portfolio', 'SEO knowledge', 'Experience in content strategy'],
-      featured: false
-    }
-  ];
-
-  // State
-  const [jobs, setJobs] = useState(initialJobs);
+  const [jobs, setJobs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     status: 'all',
@@ -139,8 +16,63 @@ export default function CareerOfficeJobs() {
   });
   const [sortBy, setSortBy] = useState('newest');
   const [selectedJob, setSelectedJob] = useState(null);
-  const [isAddingJob, setIsAddingJob] = useState(false);
+  const [isAddingJob, setIsAddingJob] = useState(true);
   const [isEditingJob, setIsEditingJob] = useState(false);
+  const [applicationsList, setApplicationsList] = useState([]);
+  // Form state for add/edit
+  const [formState, setFormState] = useState({
+    title: '', company: '', location: '', type: 'Full-time', salary: '', deadline: '', description: '', requirements: '', featured: false, status: 'Draft'
+  });
+  const [formError, setFormError] = useState('');
+  const [formLoading, setFormLoading] = useState(false);
+  const [formSuccess, setFormSuccess] = useState('');
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/jobs')
+      .then(r => r.json())
+      .then(data => { if (!mounted) return; setJobs(data); })
+      .catch(() => {});
+    return () => { mounted = false };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/applications')
+      .then(r => r.json())
+      .then(data => { if (!mounted) return; setApplicationsList(data); })
+      .catch(() => {});
+    return () => { mounted = false };
+  }, []);
+
+  // Handle add new job - quick POST of a minimal example job for admin convenience
+  const handleAddNewJob = async () => {
+    const newJob = {
+      title: 'New Job Title',
+      company: 'New Company',
+  location: 'Manila, Philippines (Remote)',
+      type: 'Full-time',
+      salary: '',
+      posted: new Date().toISOString().slice(0,10),
+      deadline: '',
+      status: 'Draft',
+      applications: 0,
+      description: 'New job description...',
+      requirements: [],
+      featured: false
+    };
+    try {
+      const res = await fetch('/api/jobs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newJob) });
+      if (res.ok) {
+        const created = await res.json();
+        setJobs(prev => [...prev, created]);
+        setSelectedJob(created);
+        setIsAddingJob(false);
+      }
+    } catch (err) {
+      console.error('Failed to post job', err);
+    }
+    }
 
   // Format date
   const formatDate = (dateString) => {
@@ -209,17 +141,94 @@ export default function CareerOfficeJobs() {
     setIsEditingJob(false);
   };
 
-  // Handle add new job
-  const handleAddNewJob = () => {
-    setSelectedJob(null);
-    setIsAddingJob(true);
-    setIsEditingJob(false);
-  };
+  // When opening add/edit form, populate formState
+  useEffect(() => {
+    if (isAddingJob) {
+      setFormState({ title: '', company: '', location: '', type: 'Full-time', salary: '', deadline: '', description: '', requirements: '', featured: false, status: 'Draft' });
+      setFormError(''); setFormSuccess('');
+    }
+    if (isEditingJob && selectedJob) {
+      setFormState({
+        title: selectedJob.title || '',
+        company: selectedJob.company || '',
+        location: selectedJob.location || '',
+        type: selectedJob.type || 'Full-time',
+        salary: selectedJob.salary || '',
+        deadline: selectedJob.deadline || '',
+        description: selectedJob.description || '',
+        requirements: (selectedJob.requirements || []).join('\n'),
+        featured: !!selectedJob.featured,
+        status: selectedJob.status || 'Draft'
+      });
+      setFormError(''); setFormSuccess('');
+    }
+  }, [isAddingJob, isEditingJob, selectedJob]);
+
+  // (Posting handled by async handleAddNewJob defined above)
 
   // Handle edit job
   const handleEditJob = () => {
     setIsEditingJob(true);
   };
+
+  // Handle submit job form (for posting new jobs)
+  const handleSubmitJob = async ({ isEdit = false } = {}) => {
+    setFormError(''); setFormSuccess('');
+    // basic client-side validation
+    if (!formState.title || !formState.company) {
+      setFormError('Please provide at least a job title and company.');
+      return;
+    }
+    setFormLoading(true);
+    try {
+      const requirements = String(formState.requirements || '').split('\n').map(s => s.trim()).filter(Boolean);
+      const payload = {
+        title: formState.title,
+        company: formState.company,
+        location: formState.location,
+        type: formState.type,
+        salary: formState.salary,
+        posted: new Date().toISOString().slice(0,10),
+        deadline: formState.deadline,
+        status: formState.status,
+        applications: isEdit && selectedJob ? selectedJob.applications : 0,
+        description: formState.description,
+        requirements,
+        featured: !!formState.featured
+      };
+
+      if (isEdit && selectedJob) {
+        const res = await fetch(`/api/jobs/${selectedJob.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (res.ok) {
+          const updated = await res.json();
+          setJobs(prev => prev.map(j => j.id === updated.id ? updated : j));
+          setSelectedJob(updated);
+          setFormSuccess('Job updated successfully.');
+          // Toast
+        } else {
+          setFormError('Failed to update job.');
+        }
+      } else {
+        const res = await fetch('/api/jobs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (res.ok) {
+          const created = await res.json();
+          setJobs(prev => [...prev, created]);
+          setSelectedJob(created);
+          setIsAddingJob(false);
+          setFormSuccess('Job posted successfully.');
+        } else {
+          setFormError('Failed to create job.');
+        }
+      }
+    } catch (err) {
+      console.error('Error submitting job form', err);
+      setFormError('An unexpected error occurred.');
+    } finally {
+      setFormLoading(false);
+      setTimeout(() => setFormSuccess(''), 3000);
+    }
+  };
+
 
   // Handle close job detail
   const handleCloseJobDetail = () => {
@@ -228,17 +237,67 @@ export default function CareerOfficeJobs() {
     setIsEditingJob(false);
   };
 
+  // Change job status (Close / Reopen)
+  const handleChangeJobStatus = async (job, newStatus) => {
+    if (!job) return;
+    setFormError(''); setFormSuccess(''); setFormLoading(true);
+    try {
+      const res = await fetch(`/api/jobs/${job.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: newStatus }) });
+      if (res.ok) {
+        const updated = await res.json();
+        setJobs(prev => prev.map(j => j.id === updated.id ? updated : j));
+        setSelectedJob(updated);
+        setFormSuccess(`Job ${newStatus === 'Closed' ? 'closed' : 'reopened'} successfully.`);
+      } else {
+        setFormError('Failed to update job status.');
+      }
+    } catch (err) {
+      console.error(err);
+      setFormError('Error updating job status.');
+    } finally {
+      setFormLoading(false);
+      setTimeout(() => setFormSuccess(''), 3000);
+    }
+  };
+
+  // Delete job
+  const handleDeleteJob = async (job) => {
+    if (!job) return;
+    if (!confirm('Delete this job? This action cannot be undone.')) return;
+    setFormError(''); setFormSuccess(''); setFormLoading(true);
+    try {
+      const res = await fetch(`/api/jobs/${job.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setJobs(prev => prev.filter(j => j.id !== job.id));
+        setSelectedJob(null);
+        setFormSuccess('Job deleted.');
+      } else {
+        setFormError('Failed to delete job.');
+      }
+    } catch (err) {
+      console.error(err);
+      setFormError('Error deleting job.');
+    } finally {
+      setFormLoading(false);
+      setTimeout(() => setFormSuccess(''), 3000);
+    }
+  };
+
   return (
     <DashboardLayout userType="career-office">
+      <Toast message={formSuccess || formError} type={formError ? 'error' : 'success'} />
       <div className={styles.jobsContainer}>
-        <div className={styles.jobsHeader}>
+          <div className={styles.jobsHeader}>
           <h1 className={styles.jobsTitle}>Job Management</h1>
-          <button 
-            className={`btn ${styles.addJobButton}`}
-            onClick={handleAddNewJob}
-          >
-            Post New Job
-          </button>
+          {/* Only show header 'Post New Job' when the form is not already open */}
+          {!(isAddingJob || isEditingJob) && (
+            <button 
+              className={`btn ${styles.addJobButton}`}
+              onClick={() => { setIsAddingJob(true); setSelectedJob(null); }}
+            >
+              Post New Job
+            </button>
+          )}
         </div>
 
         <div className={styles.jobsContent}>
@@ -447,27 +506,59 @@ export default function CareerOfficeJobs() {
                       ))}
                     </ul>
                   </div>
+
+                  <div id="applicants" className={styles.jobDetailSection}>
+                    <h3 className={styles.sectionTitle}>Applicants</h3>
+                    {applicationsList.filter(a => Number(a.jobId) === Number(selectedJob.id)).length === 0 ? (
+                      <p>No applicants yet.</p>
+                    ) : (
+                      <ul className={styles.requirementsList}>
+                        {applicationsList.filter(a => Number(a.jobId) === Number(selectedJob.id)).map(app => (
+                          <li key={app.id} className={styles.requirementItem}>
+                            <div>
+                              <strong>Application #{app.id}</strong>
+                            </div>
+                            <div>
+                              {app.resumeName ? (
+                                <>
+                                  <a href={app.resumeData} download={app.resumeName} target="_blank" rel="noreferrer">{app.resumeName}</a>
+                                  {app.resumeData && app.resumeData.length > 0 ? (
+                                    <span style={{ marginLeft: 8, color: '#6b7280' }}>({(app.resumeData.length * 3 / 4 / 1024 / 1024).toFixed(2)} MB)</span>
+                                  ) : null}
+                                </>
+                              ) : (
+                                <span>No resume uploaded</span>
+                              )}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
 
                 <div className={styles.jobDetailActions}>
                   <button 
                     className={`btn ${styles.editButton}`}
-                    onClick={handleEditJob}
+                    onClick={() => { setIsEditingJob(true); setIsAddingJob(false); }}
                   >
                     Edit Job
                   </button>
-                  <button className={`btn ${styles.viewApplicantsButton}`}>
+                  <button className={`btn ${styles.viewApplicantsButton}`} onClick={() => { document.getElementById('applicants')?.scrollIntoView({ behavior: 'smooth' }); }}>
                     View Applicants ({selectedJob.applications})
                   </button>
                   {selectedJob.status === 'Active' ? (
-                    <button className={`btn ${styles.closeJobButton}`}>
+                    <button className={`btn ${styles.closeJobButton}`} onClick={() => handleChangeJobStatus(selectedJob, 'Closed')}>
                       Close Job
                     </button>
                   ) : selectedJob.status === 'Closed' ? (
-                    <button className={`btn ${styles.reopenJobButton}`}>
+                    <button className={`btn ${styles.reopenJobButton}`} onClick={() => handleChangeJobStatus(selectedJob, 'Active')}>
                       Reopen Job
                     </button>
                   ) : null}
+                  <button className={`btn ${styles.deleteJobButton}`} onClick={() => handleDeleteJob(selectedJob)}>
+                    Delete Job
+                  </button>
                 </div>
               </div>
             )}
@@ -486,129 +577,10 @@ export default function CareerOfficeJobs() {
                   </h2>
                 </div>
 
-                <div className={styles.jobForm}>
-                  <div className={styles.formRow}>
-                    <label className={styles.formLabel}>Job Title</label>
-                    <input 
-                      type="text" 
-                      className={styles.formInput}
-                      defaultValue={isEditingJob ? selectedJob.title : ''}
-                      placeholder="e.g. Frontend Developer"
-                    />
-                  </div>
+                <JobForm formState={formState} setFormState={setFormState} onSubmit={handleSubmitJob} onCancel={handleCloseJobDetail} loading={formLoading} error={formError} isEditing={isEditingJob} />
 
-                  <div className={styles.formRow}>
-                    <label className={styles.formLabel}>Company</label>
-                    <input 
-                      type="text" 
-                      className={styles.formInput}
-                      defaultValue={isEditingJob ? selectedJob.company : ''}
-                      placeholder="e.g. TechCorp Inc."
-                    />
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <label className={styles.formLabel}>Location</label>
-                    <input 
-                      type="text" 
-                      className={styles.formInput}
-                      defaultValue={isEditingJob ? selectedJob.location : ''}
-                      placeholder="e.g. San Francisco, CA (Remote)"
-                    />
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <label className={styles.formLabel}>Job Type</label>
-                    <select 
-                      className={styles.formSelect}
-                      defaultValue={isEditingJob ? selectedJob.type : ''}
-                    >
-                      <option value="">Select Job Type</option>
-                      <option value="Full-time">Full-time</option>
-                      <option value="Part-time">Part-time</option>
-                      <option value="Contract">Contract</option>
-                      <option value="Freelance">Freelance</option>
-                      <option value="Internship">Internship</option>
-                    </select>
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <label className={styles.formLabel}>Salary</label>
-                    <input 
-                      type="text" 
-                      className={styles.formInput}
-                      defaultValue={isEditingJob ? selectedJob.salary : ''}
-                      placeholder="e.g. $80,000 - $110,000"
-                    />
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <label className={styles.formLabel}>Application Deadline</label>
-                    <input 
-                      type="date" 
-                      className={styles.formInput}
-                      defaultValue={isEditingJob ? selectedJob.deadline : ''}
-                    />
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <label className={styles.formLabel}>Description</label>
-                    <textarea 
-                      className={styles.formTextarea}
-                      defaultValue={isEditingJob ? selectedJob.description : ''}
-                      placeholder="Enter job description..."
-                      rows={5}
-                    ></textarea>
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <label className={styles.formLabel}>Requirements</label>
-                    <textarea 
-                      className={styles.formTextarea}
-                      defaultValue={isEditingJob ? selectedJob.requirements.join('\n') : ''}
-                      placeholder="Enter requirements, one per line..."
-                      rows={5}
-                    ></textarea>
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <div className={styles.formCheckboxRow}>
-                      <input 
-                        type="checkbox" 
-                        id="featuredJob"
-                        className={styles.formCheckbox}
-                        defaultChecked={isEditingJob ? selectedJob.featured : false}
-                      />
-                      <label htmlFor="featuredJob" className={styles.formCheckboxLabel}>
-                        Mark as Featured Job
-                      </label>
-                    </div>
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <label className={styles.formLabel}>Status</label>
-                    <select 
-                      className={styles.formSelect}
-                      defaultValue={isEditingJob ? selectedJob.status : 'Draft'}
-                    >
-                      <option value="Draft">Draft</option>
-                      <option value="Active">Active</option>
-                      <option value="Closed">Closed</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className={styles.jobFormActions}>
-                  <button 
-                    className={`btn ${styles.cancelButton}`}
-                    onClick={handleCloseJobDetail}
-                  >
-                    Cancel
-                  </button>
-                  <button className={`btn ${styles.saveButton}`}>
-                    {isAddingJob ? 'Post Job' : 'Save Changes'}
-                  </button>
-                </div>
+                {/* Actions moved into the JobForm component to avoid duplication */}
+                {formSuccess && <div style={{ color: 'green', marginTop: 12 }}>{formSuccess}</div>}
               </div>
             )}
 
@@ -617,12 +589,15 @@ export default function CareerOfficeJobs() {
                 <div className={styles.noJobSelectedIcon}>👈</div>
                 <h3>No job selected</h3>
                 <p>Select a job from the list to view details</p>
-                <button 
-                  className={`btn ${styles.addJobButton}`}
-                  onClick={handleAddNewJob}
-                >
-                  Post New Job
-                </button>
+                {/* Only show this button when the form isn't already open */}
+                {!(isAddingJob || isEditingJob) && (
+                  <button 
+                    className={`btn ${styles.addJobButton}`}
+                    onClick={() => { setIsAddingJob(true); setSelectedJob(null); }}
+                  >
+                    Post New Job
+                  </button>
+                )}
               </div>
             )}
           </div>

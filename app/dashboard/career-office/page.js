@@ -91,7 +91,7 @@ export default function CareerOfficeDashboard() {
       id: 1,
       title: 'Frontend Developer',
       company: 'TechCorp Inc.',
-      location: 'San Francisco, CA (Remote)',
+  location: 'Manila, Philippines (Remote)',
       posted: '2023-10-15',
       applications: 12
     },
@@ -99,7 +99,7 @@ export default function CareerOfficeDashboard() {
       id: 2,
       title: 'UX Designer',
       company: 'Creative Solutions',
-      location: 'New York, NY (On-site)',
+  location: 'Quezon City, Philippines (On-site)',
       posted: '2023-10-14',
       applications: 8
     },
@@ -107,7 +107,7 @@ export default function CareerOfficeDashboard() {
       id: 3,
       title: 'Data Analyst',
       company: 'DataViz Corp',
-      location: 'Chicago, IL (Hybrid)',
+  location: 'Cebu, Philippines (Hybrid)',
       posted: '2023-10-13',
       applications: 5
     },
@@ -115,7 +115,7 @@ export default function CareerOfficeDashboard() {
       id: 4,
       title: 'Full Stack Developer',
       company: 'WebSolutions Ltd',
-      location: 'Austin, TX (Remote)',
+  location: 'Davao, Philippines (Remote)',
       posted: '2023-10-12',
       applications: 15
     }
@@ -146,7 +146,6 @@ export default function CareerOfficeDashboard() {
           <h1 className={styles.dashboardTitle}>Career Office Dashboard</h1>
           <div className={styles.dashboardActions}>
             <button className={`btn ${styles.actionButton}`}>Post New Job</button>
-            <button className={`btn ${styles.actionButton}`}>Schedule Interview</button>
           </div>
         </div>
 
@@ -206,7 +205,6 @@ export default function CareerOfficeDashboard() {
                       <div className={styles.applicationActions}>
                         <button className={styles.actionButton} title="View Details">👁️</button>
                         <button className={styles.actionButton} title="Forward to Employer">📤</button>
-                        <button className={styles.actionButton} title="Schedule Interview">📅</button>
                       </div>
                     </div>
                   </div>
@@ -299,13 +297,7 @@ export default function CareerOfficeDashboard() {
                     <div className={styles.quickActionDescription}>View and search student portfolios</div>
                   </div>
                 </a>
-                <a href="/dashboard/career-office/interviews/schedule" className={styles.quickActionItem}>
-                  <div className={styles.quickActionIcon}>🗓️</div>
-                  <div className={styles.quickActionContent}>
-                    <div className={styles.quickActionTitle}>Schedule Interview</div>
-                    <div className={styles.quickActionDescription}>Set up interviews between students and employers</div>
-                  </div>
-                </a>
+                {/* Schedule Interview quick action removed per request */}
                 <a href="/dashboard/career-office/reports" className={styles.quickActionItem}>
                   <div className={styles.quickActionIcon}>📊</div>
                   <div className={styles.quickActionContent}>

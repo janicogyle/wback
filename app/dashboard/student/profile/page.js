@@ -42,8 +42,8 @@ export default function StudentProfile() {
     // Preferences
     jobTypes: ['Full-time'],
     locations: ['Zambales, Olongapo'],
-    industries: ['IT', 'Finance'],
-    salary: '25,000 - 30,000',
+  industries: ['IT', 'Finance'],
+  salary: '₱25,000 - ₱30,000',
   });
   
   const handleChange = (e) => {

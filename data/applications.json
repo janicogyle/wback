@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "jobId": 4,
+    "jobTitle": "Full Stack Developer",
+    "company": "WebSolutions Ltd",
+    "status": "Applied",
+    "date": "2023-10-15",
+    "notes": "Applied through company website. Waiting for response."
+  },
+  {
+    "id": 2,
+    "date": "2025-10-05",
+    "jobId": 1,
+    "jobTitle": "Frontend Developer",
+    "company": "",
+    "status": "Applied",
+    "notes": "sd"
+  }
+]
