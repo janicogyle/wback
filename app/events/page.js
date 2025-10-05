@@ -143,9 +143,6 @@ export default function EventsPage() {
             <p className={styles.ctaText}>
               If you're an employer or organization interested in hosting an event with our career center, we'd love to hear from you.
             </p>
-            <Link href="/contact" className={`btn btn-primary ${styles.ctaButton}`}>
-              Get in Touch
-            </Link>
           </div>
         </div>
       </section>
