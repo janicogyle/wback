@@ -1,5 +1,7 @@
 'use client';
 import { useState } from 'react';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { firebaseAuth } from '../../lib/firebaseClient';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './register.module.css';
@@ -68,7 +70,7 @@ export default function Register() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = validateForm();
@@ -77,19 +79,22 @@ export default function Register() {
       return;
     }
 
-    // Placeholder for Firebase Auth logic
-    console.log('Registration data:', formData);
-    // In a real app, you would call Firebase Auth here
-    const authConfig = getAuthConfig();
     const navConfig = getNavConfig();
-    
-    // Set token and role based on selected role
     const role = formData.role;
-    localStorage.setItem(authConfig.tokenKey, authConfig.tokens[role]);
-    localStorage.setItem(authConfig.userRoleKey, role);
-    
-    // Redirect to the appropriate dashboard
-    window.location.href = navConfig.dashboardRedirects[role];
+    try {
+      const cred = await createUserWithEmailAndPassword(firebaseAuth, formData.email, formData.password);
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+      await updateProfile(cred.user, { displayName: fullName });
+      const idToken = await cred.user.getIdToken();
+      await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken, profile: { firstName: formData.firstName, lastName: formData.lastName, email: formData.email, role } })
+      });
+      window.location.href = navConfig.dashboardRedirects[role];
+    } catch (error) {
+      setErrors({ general: error.message || 'Registration failed' });
+    }
   };
 
   return (
@@ -177,6 +182,7 @@ export default function Register() {
             <Button type="submit" variant="primary" fullWidth>
               Register
             </Button>
+            {errors.general && <div className={styles.errorText}>{errors.general}</div>}
           </form>
 
           <div className={styles.registerFooter}>

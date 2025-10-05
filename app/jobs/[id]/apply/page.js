@@ -13,12 +13,13 @@ export default function JobApply({ params }) {
   const [error, setError] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState('');
   const [selectedFileSize, setSelectedFileSize] = useState(0);
+  const [company, setCompany] = useState('');
 
   useEffect(() => {
     let mounted = true;
     fetch('/api/jobs')
       .then(r => r.json())
-      .then(data => { if (!mounted) return; const found = data.find(j => String(j.id) === String(id)); if (found) setJobTitle(found.title); })
+      .then(data => { if (!mounted) return; const found = data.find(j => String(j.id) === String(id)); if (found) { setJobTitle(found.title); setCompany(found.company || ''); } })
       .catch(() => {});
     return () => { mounted = false };
   }, [id]);
@@ -34,7 +35,7 @@ export default function JobApply({ params }) {
       fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jobId: Number(id), jobTitle, company: '', status: 'Applied', resumeName, resumeData })
+        body: JSON.stringify({ jobId: Number(id), jobTitle, company, status: 'Applied', resumeName, resumeData })
       })
         .then(r => r.json())
         .then(() => {

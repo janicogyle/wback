@@ -17,21 +17,20 @@ export default function Navbar() {
   const authConfig = getAuthConfig();
   const navConfig = getNavConfig();
   
-  // Check authentication status and user role from localStorage
+  // Check authentication status using session cookie via /api/me
   useEffect(() => {
-    // Check if we're in the browser environment
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem(authConfig.tokenKey);
-      const role = localStorage.getItem(authConfig.userRoleKey);
-      setIsLoggedIn(!!token);
-      setUserRole(role || authConfig.defaultRole);
-      
-      // Redirect if student tries to access career office pages
-      // Remove this block from the useEffect in Navbar:
-      // if (role === authConfig.roles.student && pathname.includes('/career-office')) {
-      //   router.push(navConfig.dashboardRedirects.student);
-      // }
-    }
+    (async () => {
+      try {
+        const res = await fetch('/api/me');
+        const data = await res.json();
+        const user = data.user;
+        setIsLoggedIn(!!user);
+        setUserRole(user?.role || authConfig.defaultRole);
+      } catch {
+        setIsLoggedIn(false);
+        setUserRole(authConfig.defaultRole);
+      }
+    })();
   }, [pathname, router, authConfig, navConfig]);
 
   // Close menu when clicking outside

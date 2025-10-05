@@ -4,7 +4,9 @@ import Link from 'next/link';
 import styles from './career-office-login.module.css';
 import FormInput from '../../../components/UI/FormInput/FormInput';
 import Button from '../../../components/UI/Button/Button';
-import { getAuthConfig, getNavConfig, getValidationConfig } from '../../../utils/config';
+import { getNavConfig, getValidationConfig } from '../../../utils/config';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { firebaseAuth } from '../../../lib/firebaseClient';
 
 export default function CareerOfficeLogin() {
   const [formData, setFormData] = useState({
@@ -47,9 +49,8 @@ export default function CareerOfficeLogin() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
 
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
@@ -57,18 +58,37 @@ export default function CareerOfficeLogin() {
       return;
     }
 
-    // Placeholder for Firebase Auth logic
-    console.log('Career Office Login data:', formData);
-    // In a real app, you would call Firebase Auth here
-    const authConfig = getAuthConfig();
-    const navConfig = getNavConfig();
-    
-    // For now, just set token and role for career office
-    localStorage.setItem(authConfig.tokenKey, authConfig.tokens.careerOffice);
-    localStorage.setItem(authConfig.userRoleKey, authConfig.roles.careerOffice);
-    
-    // Redirect to the career office dashboard
-    window.location.href = navConfig.dashboardRedirects.careerOffice;
+    try {
+      const cred = await signInWithEmailAndPassword(firebaseAuth, formData.email, formData.password);
+      const idToken = await cred.user.getIdToken();
+
+      // Create HTTP-only session cookie in our app
+      await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken })
+      });
+
+      // Verify role and redirect
+      let isCareerOffice = false;
+      try {
+        const meRes = await fetch('/api/me', { cache: 'no-store' });
+        if (meRes.ok) {
+          const me = await meRes.json();
+          const role = me?.user?.role || me?.profile?.role;
+          isCareerOffice = role === 'career_office';
+        }
+      } catch {}
+
+      const navConfig = getNavConfig();
+      if (isCareerOffice) {
+        window.location.href = navConfig.dashboardRedirects.careerOffice || '/dashboard/career-office';
+      } else {
+        setErrors({ general: 'This account is not authorized for the Career Office.' });
+      }
+    } catch (error) {
+      setErrors({ general: error.message || 'Login failed' });
+    }
   };
 
   return (
@@ -112,6 +132,7 @@ export default function CareerOfficeLogin() {
           </form>
 
           <div className={styles.loginFooter}>
+            {errors.general && <div className={styles.errorText}>{errors.general}</div>}
             <p className={styles.studentLink}>
               <Link href="/login">
                 Student/Graduate Login

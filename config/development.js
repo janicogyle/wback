@@ -45,16 +45,18 @@ module.exports = {
         { name: 'About', path: '/about' },
         { name: 'Dashboard', path: '/dashboard/career-office' },
       ],
+      // Graduates use the same dashboard as students in this app
       graduate: [
         { name: 'Events', path: '/events' },
         { name: 'About', path: '/about' },
-        { name: 'Dashboard', path: '/dashboard/graduate' },
+        { name: 'Dashboard', path: '/dashboard/student' },
       ],
     },
     dashboardRedirects: {
       student: '/dashboard/student',
       careerOffice: '/dashboard/career-office',
-      graduate: '/dashboard/graduate',
+      // Redirect graduates to the student dashboard (shared experience)
+      graduate: '/dashboard/student',
     },
   },
   

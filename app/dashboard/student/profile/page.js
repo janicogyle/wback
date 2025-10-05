@@ -1,5 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { firebaseAuth, firebaseDb } from '../../../../lib/firebaseClient';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import DashboardLayout from '../../../../components/Dashboard/DashboardLayout';
 import Card from '../../../../components/UI/Card/Card';
 import Button from '../../../../components/UI/Button/Button';
@@ -12,38 +14,38 @@ export default function StudentProfile() {
   
   const [formData, setFormData] = useState({
     // Personal Information
-    firstName: 'John',
-    lastName: 'ian',
-    email: 'johnian@google.com',
-    phone: '09304433316',
-    dateOfBirth: '2005-04-02',
-    address: 'Asinan Olongapo city',
-    city: 'Olongapo',
-    state: 'Zambales',
-    zipCode: '2200',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    dateOfBirth: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
     
     // Education
-    degree: 'Bachelor of Science',
-    major: 'Computer Science',
-    university: 'Gordon College',
-    graduationDate: '2026-05',
-    gpa: '1.8',
+    degree: '',
+    major: '',
+    university: '',
+    graduationDate: '',
+    gpa: '',
     
     // Skills & Experience
-    skills: 'JavaScript, React, Node.js, HTML, CSS, Git',
-    bio: 'Recent computer science graduate with a passion for web development and software engineering.',
+    skills: '',
+    bio: '',
     
     // Resume & Portfolio
     resumeUrl: '',
-    portfolioUrl: 'https://johndoe-portfolio.com',
-    githubUrl: 'https://github.com/johndoe',
-    linkedinUrl: 'https://linkedin.com/in/johndoe',
+    portfolioUrl: '',
+    githubUrl: '',
+    linkedinUrl: '',
     
     // Preferences
-    jobTypes: ['Full-time'],
-    locations: ['Zambales, Olongapo'],
-  industries: ['IT', 'Finance'],
-  salary: '₱25,000 - ₱30,000',
+    jobTypes: [],
+    locations: [],
+    industries: [],
+    salary: '',
   });
   
   const handleChange = (e) => {
@@ -53,12 +55,160 @@ export default function StudentProfile() {
       [name]: value,
     });
   };
+
+  // Load profile from backend for current user
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/profile');
+        const data = await res.json();
+        const p = data.profile || {};
+        setFormData(prev => ({
+          ...prev,
+          firstName: p.firstName || prev.firstName,
+          lastName: p.lastName || prev.lastName,
+          email: p.email || prev.email,
+          phone: p.phone || prev.phone,
+          dateOfBirth: p.dateOfBirth || prev.dateOfBirth,
+          address: p.address || prev.address,
+          city: p.city || prev.city,
+          state: p.state || prev.state,
+          zipCode: p.zipCode || prev.zipCode,
+          degree: p.degree || prev.degree,
+          major: p.major || prev.major,
+          university: p.university || prev.university,
+          graduationDate: p.graduationDate || prev.graduationDate,
+          gpa: p.gpa || prev.gpa,
+          skills: p.skills || prev.skills,
+          bio: p.bio || prev.bio,
+          resumeUrl: p.resumeUrl || prev.resumeUrl,
+          portfolioUrl: p.portfolioUrl || prev.portfolioUrl,
+          githubUrl: p.githubUrl || prev.githubUrl,
+          linkedinUrl: p.linkedinUrl || prev.linkedinUrl,
+          jobTypes: p.jobTypes || prev.jobTypes,
+          locations: p.locations || prev.locations,
+          industries: p.industries || prev.industries,
+          salary: p.salary || prev.salary,
+        }));
+      } catch {
+        // Fallback: read directly with client SDK
+        try {
+          const user = firebaseAuth.currentUser;
+          if (user) {
+            const snap = await getDoc(doc(firebaseDb, 'users', user.uid));
+            const p = snap.exists() ? snap.data() : {};
+            setFormData(prev => ({
+              ...prev,
+              firstName: p.firstName || prev.firstName,
+              lastName: p.lastName || prev.lastName,
+              email: p.email || user.email || prev.email,
+              phone: p.phone || prev.phone,
+              dateOfBirth: p.dateOfBirth || prev.dateOfBirth,
+              address: p.address || prev.address,
+              city: p.city || prev.city,
+              state: p.state || prev.state,
+              zipCode: p.zipCode || prev.zipCode,
+              degree: p.degree || prev.degree,
+              major: p.major || prev.major,
+              university: p.university || prev.university,
+              graduationDate: p.graduationDate || prev.graduationDate,
+              gpa: p.gpa || prev.gpa,
+              skills: p.skills || prev.skills,
+              bio: p.bio || prev.bio,
+              resumeUrl: p.resumeUrl || prev.resumeUrl,
+              portfolioUrl: p.portfolioUrl || prev.portfolioUrl,
+              githubUrl: p.githubUrl || prev.githubUrl,
+              linkedinUrl: p.linkedinUrl || prev.linkedinUrl,
+              jobTypes: p.jobTypes || prev.jobTypes,
+              locations: p.locations || prev.locations,
+              industries: p.industries || prev.industries,
+              salary: p.salary || prev.salary,
+            }));
+          }
+        } catch {}
+      }
+    })();
+  }, []);
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real app, you would save the data to a database
-    console.log('Profile data:', formData);
-    setIsEditing(false);
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          dateOfBirth: formData.dateOfBirth,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          zipCode: formData.zipCode,
+          degree: formData.degree,
+          major: formData.major,
+          university: formData.university,
+          graduationDate: formData.graduationDate,
+          gpa: formData.gpa,
+          skills: formData.skills,
+          bio: formData.bio,
+          resumeUrl: formData.resumeUrl,
+          githubUrl: formData.githubUrl,
+          linkedinUrl: formData.linkedinUrl,
+          portfolioUrl: formData.portfolioUrl,
+          jobTypes: formData.jobTypes,
+          locations: formData.locations,
+          industries: formData.industries,
+          salary: formData.salary,
+        })
+      });
+      if (!res.ok) {
+        let msg = 'Failed to save profile';
+        try {
+          const j = await res.json();
+          if (j?.error) msg = j.error;
+        } catch {}
+        // Fallback: save directly with client SDK
+        const user = firebaseAuth.currentUser;
+        if (user) {
+          await setDoc(doc(firebaseDb, 'users', user.uid), {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            fullName: `${formData.firstName} ${formData.lastName}`.trim(),
+            email: formData.email || user.email || '',
+            phone: formData.phone,
+            dateOfBirth: formData.dateOfBirth,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            zipCode: formData.zipCode,
+            degree: formData.degree,
+            major: formData.major,
+            university: formData.university,
+            graduationDate: formData.graduationDate,
+            gpa: formData.gpa,
+            skills: formData.skills,
+            bio: formData.bio,
+            resumeUrl: formData.resumeUrl,
+            githubUrl: formData.githubUrl,
+            linkedinUrl: formData.linkedinUrl,
+            portfolioUrl: formData.portfolioUrl,
+            jobTypes: formData.jobTypes,
+            locations: formData.locations,
+            industries: formData.industries,
+            salary: formData.salary,
+            uid: user.uid,
+            updatedAt: new Date().toISOString(),
+          }, { merge: true });
+        } else {
+          throw new Error(msg);
+        }
+      }
+      setIsEditing(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
   
   const handleCancel = () => {

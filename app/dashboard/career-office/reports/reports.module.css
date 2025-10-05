@@ -26,7 +26,7 @@
   border: 1px solid var(--gray-300);
   border-radius: 0.375rem;
   font-size: 0.875rem;
-  background-color: rgb(78, 54, 54);
+  background-color: #fff;
 }
 
 .exportButton {
@@ -145,3 +145,13 @@
   color: var(--gray-500);
   font-style: italic;
 }
+
+/* Minimal modal reused */
+.modalOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modalCard { background: #fff; width: min(560px, 92vw); border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.15); overflow: hidden; }
+.modalHeader { padding: 0.9rem 1rem; border-bottom: 1px solid var(--gray-200); font-weight: 600; }
+.modalBody { padding: 1rem; color: var(--gray-800); font-size: 0.95rem; display: grid; gap: 0.5rem; }
+.modalActions { padding: 0.75rem 1rem; display: flex; justify-content: flex-end; gap: 0.5rem; border-top: 1px solid var(--gray-200); }
+.btnBase { padding: 0.5rem 0.8rem; border-radius: 0.375rem; border: 1px solid var(--gray-300); background: #fff; color: var(--gray-800); cursor: pointer; }
+.btnPrimary { background: var(--primary-color); border-color: var(--primary-color); color: #fff; }
+.btnBase:hover { background: var(--gray-50); border-color: var(--gray-400); }

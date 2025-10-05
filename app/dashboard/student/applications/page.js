@@ -6,13 +6,15 @@ import styles from './applications.module.css';
 
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState([]);
+  const [viewApp, setViewApp] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   // Fetch persisted applications
   useEffect(() => {
     let mounted = true;
     fetch('/api/applications')
       .then(r => r.json())
-      .then(data => { if (!mounted) setApplications(data); })
+      .then(data => { if (mounted) setApplications(data || []); })
       .catch(() => {});
     return () => { mounted = false };
   }, []);
@@ -74,6 +76,27 @@ export default function ApplicationsPage() {
       setSortBy(field);
       setSortOrder('desc');
     }
+  };
+
+  // Action handlers
+  const handleView = async (id) => {
+    const app = applications.find(a => a.id === id);
+    if (app) setViewApp(app);
+  };
+
+  // Edit functionality removed per request
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch('/api/applications', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      if (res.ok) {
+        setApplications(prev => prev.filter(a => a.id !== id));
+      }
+    } catch {}
   };
 
   return (
@@ -179,13 +202,11 @@ export default function ApplicationsPage() {
                     {formatDate(application.date)}
                   </div>
                   <div className={`${styles.tableCell} ${styles.actionsCell}`}>
-                    <button className={styles.actionButton} title="View Details">
+                    <button className={styles.actionButton} title="View Details" onClick={() => handleView(application.id)}>
                       <span>👁️</span>
                     </button>
-                    <button className={styles.actionButton} title="Edit Application">
-                      <span>✏️</span>
-                    </button>
-                    <button className={styles.actionButton} title="Delete Application">
+                    {/* Edit button removed */}
+                    <button className={styles.actionButton} title="Delete Application" onClick={() => setConfirmDeleteId(application.id)}>
                       <span>🗑️</span>
                     </button>
                   </div>
@@ -219,6 +240,37 @@ export default function ApplicationsPage() {
           </div>
         </div>
       </div>
+      {viewApp && (
+        <div className={styles.modalOverlay} onClick={() => setViewApp(null)}>
+          <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>Application Details</div>
+            <div className={styles.modalBody}>
+              <div className={styles.modalRow}><div className={styles.modalLabel}>Job</div><div>{viewApp.jobTitle}</div></div>
+              <div className={styles.modalRow}><div className={styles.modalLabel}>Company</div><div>{viewApp.company}</div></div>
+              <div className={styles.modalRow}><div className={styles.modalLabel}>Status</div><div>{viewApp.status}</div></div>
+              <div className={styles.modalRow}><div className={styles.modalLabel}>Date Applied</div><div>{formatDate(viewApp.date)}</div></div>
+            </div>
+            <div className={styles.modalActions}>
+              <button className={styles.btnBase} onClick={() => setViewApp(null)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmDeleteId !== null && (
+        <div className={styles.modalOverlay} onClick={() => setConfirmDeleteId(null)}>
+          <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>Delete Application</div>
+            <div className={styles.modalBody}>
+              Are you sure you want to delete this application? This action cannot be undone.
+            </div>
+            <div className={styles.modalActions}>
+              <button className={styles.btnBase} onClick={() => setConfirmDeleteId(null)}>Cancel</button>
+              <button className={`${styles.btnBase} ${styles.btnDanger}`} onClick={async () => { const id = confirmDeleteId; setConfirmDeleteId(null); await handleDelete(id); }}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }

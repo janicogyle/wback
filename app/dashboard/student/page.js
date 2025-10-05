@@ -37,7 +37,7 @@ export default function StudentDashboard() {
         <section className={styles.welcomeSection}>
           <Card>
             <CardHeader>
-              <h2 className={styles.welcomeTitle}>Welcome back, John!</h2>
+              <h2 className={styles.welcomeTitle}>Welcome back!</h2>
             </CardHeader>
             <CardBody>
               <Button variant="primary" href="/dashboard/student/profile">

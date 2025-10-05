@@ -7,6 +7,8 @@ import { logout } from '../../utils/config';
 export default function DashboardLayout({ children, userType = 'student' }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [userInitials, setUserInitials] = useState('');
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,6 +32,29 @@ export default function DashboardLayout({ children, userType = 'student' }) {
       setIsSidebarOpen((prev) => !prev);
     }
   };
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('/api/me', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        const u = data?.user;
+        if (!u || !isMounted) return;
+        const first = (u.firstName || '').toString().trim();
+        const last = (u.lastName || '').toString().trim();
+        const full = (u.fullName || `${first} ${last}`).trim();
+        const display = full || u.email || '';
+        setUserName(display);
+
+        const initials = (first[0] || '') + (last[0] || (first ? '' : (u.email || '?')[0] || ''));
+        setUserInitials((initials || '?').toUpperCase());
+      } catch {}
+    };
+    fetchUser();
+    return () => { isMounted = false; };
+  }, []);
 
   const handleNavClick = () => {
     if (isMobile) setIsSidebarOpen(false);
@@ -70,7 +95,7 @@ export default function DashboardLayout({ children, userType = 'student' }) {
       >
         <div className={styles.sidebarHeader}>
           <h2 className={styles.sidebarTitle}>
-            {userType === 'career-office' ? 'Career Office' : 'Student Portal'}
+            {userType === 'career-office' ? 'Career Office' : 'User Portal'}
           </h2>
           {!isMobile && (
             <button
@@ -137,14 +162,12 @@ export default function DashboardLayout({ children, userType = 'student' }) {
             >
               ☰
             </button>
-            <h1 className={styles.pageTitle}>
-              GCCCS CareerLink
-            </h1>
+          
           </div>
           <div className={styles.headerRight}>
             <div className={styles.userInfo}>
-              <span className={styles.userName}>John Ian</span>
-              <div className={styles.userAvatar}>J</div>
+              <span className={styles.userName}>{userName || ' '}</span>
+              <div className={styles.userAvatar}>{userInitials || ' '}</div>
             </div>
           </div>
         </header>
