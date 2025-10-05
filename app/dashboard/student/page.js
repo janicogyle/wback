@@ -40,12 +40,6 @@ export default function StudentDashboard() {
               <h2 className={styles.welcomeTitle}>Welcome back, John!</h2>
             </CardHeader>
             <CardBody>
-              <p className={styles.welcomeMessage}>
-                Your profile is 80% complete. Complete your profile to increase your chances of getting hired.
-              </p>
-              <div className={styles.progressBar}>
-                <div className={styles.progressFill} style={{ width: '80%' }}></div>
-              </div>
               <Button variant="primary" href="/dashboard/student/profile">
                 Complete Profile
               </Button>

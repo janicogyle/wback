@@ -25,9 +25,9 @@ export default function StudentProfile() {
     // Education
     degree: 'Bachelor of Science',
     major: 'Computer Science',
-    university: 'GCCCS University',
-    graduationDate: '2023-05',
-    gpa: '3.8',
+    university: 'Gordon College',
+    graduationDate: '2026-05',
+    gpa: '1.8',
     
     // Skills & Experience
     skills: 'JavaScript, React, Node.js, HTML, CSS, Git',
@@ -40,10 +40,10 @@ export default function StudentProfile() {
     linkedinUrl: 'https://linkedin.com/in/johndoe',
     
     // Preferences
-    jobTypes: ['Full-time', 'Internship'],
-    locations: ['Remote', 'San Francisco, CA'],
-    industries: ['Technology', 'Finance'],
-    salary: '$70,000 - $90,000',
+    jobTypes: ['Full-time'],
+    locations: ['Zambales, Olongapo'],
+    industries: ['IT', 'Finance'],
+    salary: '25,000 - 30,000',
   });
   
   const handleChange = (e) => {
@@ -87,16 +87,6 @@ export default function StudentProfile() {
               <h2 className={styles.profileName}>{formData.firstName} {formData.lastName}</h2>
               <p className={styles.profileMajor}>{formData.major}</p>
               <p className={styles.profileUniversity}>{formData.university}</p>
-              
-              <div className={styles.profileCompletion}>
-                <div className={styles.completionText}>
-                  <span>Profile Completion</span>
-                  <span>80%</span>
-                </div>
-                <div className={styles.completionBar}>
-                  <div className={styles.completionFill} style={{ width: '80%' }}></div>
-                </div>
-              </div>
               
               <div className={styles.profileLinks}>
                 {formData.githubUrl && (
