@@ -14,8 +14,8 @@
   position: fixed;
   height: 100vh;
   z-index: 10;
-  top: 4rem; /* Position sidebar below the fixed navbar */
-  height: calc(100vh - 4rem); /* Adjust height to account for navbar */
+  top: 4rem; /* Below navbar */
+  height: calc(100vh - 4rem); /* Adjust for navbar height */
 }
 
 .sidebar.collapsed {
@@ -80,7 +80,8 @@
   border-left: 3px solid transparent;
 }
 
-.navLink:hover, .navLink.active {
+.navLink:hover,
+.navLink.active {
   background-color: var(--gray-800);
   color: white;
   border-left-color: var(--primary-color);
@@ -138,7 +139,7 @@
   border-bottom: 1px solid var(--gray-200);
   height: 1%;
   position: sticky;
-  top: 4rem; /* Position below the fixed navbar */
+  top: 4rem; /* Below fixed navbar */
   z-index: 5;
 }
 
@@ -195,7 +196,7 @@
 .contentWrapper {
   padding: 2rem;
   background-color: var(--gray-50);
-  min-height: calc(100vh - 70px - 4rem); /* Adjust for navbar height and fixed navbar */
+  min-height: calc(100vh - 70px - 4rem);
   margin-top: 0;
 }
 
@@ -208,12 +209,12 @@
   .sidebar {
     width: 220px;
   }
-  
+
   .mainContent {
     margin-left: 220px;
     width: calc(100% - 220px);
   }
-  
+
   .sidebar.collapsed ~ .mainContent {
     margin-left: 70px;
     width: calc(100% - 70px);
@@ -227,37 +228,46 @@
     width: 260px;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
-    top: 4rem;
-    height: calc(100vh - 4rem);
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    top: 0; /* ✅ FIX: remove the gap by aligning with navbar */
+    height: 100vh; /* ✅ FIX: fill full height on small screens */
   }
+
   .sidebar.collapsed {
     left: -100%;
   }
+
   .sidebar.open {
     left: 0;
   }
+
   .sidebarToggle {
     display: none;
   }
+
   .mainContent {
     margin-left: 0;
     width: 100%;
   }
+
   .sidebar.collapsed ~ .mainContent {
     margin-left: 0;
     width: 100%;
   }
+
   .mobileMenuButton {
     display: block;
   }
+
   .dashboardHeader {
     padding: 1rem;
   }
+
   .sidebarHeader {
     position: relative;
     padding-right: 2.5rem;
   }
+
   .sidebarCloseButton {
     display: block;
     position: absolute;
@@ -274,8 +284,9 @@
     border-radius: 50%;
     transition: background 0.2s;
   }
+
   .sidebarCloseButton:hover {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
     color: white;
   }
 }
@@ -284,7 +295,7 @@
   .userName {
     display: none;
   }
-  
+
   .contentWrapper {
     padding: 1rem;
   }

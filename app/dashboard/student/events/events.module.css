@@ -389,6 +389,28 @@
   color: var(--gray-600);
 }
 
+/* 🔙 Back Button */
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+  background-color: white;
+  border: 1px solid var(--gray-300);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.backButton:hover {
+  background-color: var(--gray-100);
+  color: var(--primary-color);
+}
+
 /* 📱 Responsive Design */
 @media (max-width: 1024px) {
   .eventsControls {
