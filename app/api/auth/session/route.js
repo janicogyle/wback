@@ -13,6 +13,9 @@ export async function POST(req) {
     }
 
     const decoded = await adminAuth.verifyIdToken(idToken);
+    if (!decoded.email_verified) {
+      return new Response(JSON.stringify({ error: 'Email not verified' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+    }
     const sessionCookie = await adminAuth.createSessionCookie(idToken, { expiresIn: SESSION_EXPIRES_IN_MS });
 
     // Set HTTP-only session cookie

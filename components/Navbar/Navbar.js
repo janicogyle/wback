@@ -75,17 +75,20 @@ export default function Navbar() {
           <span className={styles.highlight}>CareerLink</span>
         </Link>
 
-        <div 
-          className={`${styles.mobileMenuButton} ${isMenuOpen ? styles.active : ''}`} 
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
-          role="button"
-          tabIndex="0"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+        {/* Only show mobile menu button when not in dashboard or when not logged in */}
+        {(!isLoggedIn || !pathname.startsWith('/dashboard')) && (
+          <div 
+            className={`${styles.mobileMenuButton} ${isMenuOpen ? styles.active : ''}`} 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+            role="button"
+            tabIndex="0"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        )}
 
         <div 
           className={`${styles.navLinks} ${isMenuOpen ? styles.active : ''}`}
@@ -104,11 +107,11 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              {navConfig.authenticatedLinks[userRole]?.map((link, index) => (
+              {/* Hide navigation links when user is in dashboard */}
+              {!pathname.startsWith('/dashboard') && navConfig.authenticatedLinks[userRole]?.map((link, index) => (
                 <Link key={index} href={link.path} className={styles.navLink}>{link.name}</Link>
               ))}
               <div className={styles.authButtons}>
-                <button onClick={logout} className={`btn btn-secondary ${styles.logoutBtn}`}>Logout</button>
               </div>
             </>
           )}

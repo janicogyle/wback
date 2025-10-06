@@ -282,23 +282,22 @@ export default function CareerOfficeJobs() {
       setTimeout(() => setFormSuccess(''), 3000);
     }
   };
-
   return (
     <DashboardLayout userType="career-office">
       <Toast message={formSuccess || formError} type={formError ? 'error' : 'success'} />
-      <div className={styles.jobsContainer}>
+      <div className={`${styles.jobsContainer} ${styles.compact}`}>
           <div className={styles.jobsHeader}>
-          <h1 className={styles.jobsTitle}>Job Management</h1>
-          {/* Only show header 'Post New Job' when the form is not already open */}
-          {!(isAddingJob || isEditingJob) && (
-            <button 
-              className={`btn ${styles.addJobButton}`}
-              onClick={() => { setIsAddingJob(true); setSelectedJob(null); }}
-            >
-              Post New Job
-            </button>
-          )}
-        </div>
+            <h1 className={styles.jobsTitle}>Job Management</h1>
+            {/* Only show header 'Post New Job' when no job is selected and form is not open */}
+            {!(isAddingJob || isEditingJob || selectedJob) && (
+              <button 
+                className={`btn ${styles.addJobButton}`}
+                onClick={() => { setIsAddingJob(true); setSelectedJob(null); }}
+              >
+                Post New Job
+              </button>
+            )}
+          </div>
 
         <div className={styles.jobsContent}>
           {/* Left Panel - Filters */}
@@ -447,6 +446,12 @@ export default function CareerOfficeJobs() {
             )}
           </div>
 
+          {/* Mobile overlay */}
+          <div 
+            className={`${styles.jobDetailOverlay} ${(selectedJob || isAddingJob) ? 'active' : ''}`}
+            onClick={handleCloseJobDetail}
+          />
+
           {/* Right Panel - Job Detail */}
           <div className={`${styles.jobDetail} ${(selectedJob || isAddingJob) ? styles.jobDetailActive : ''}`}>
             {selectedJob && !isAddingJob && !isEditingJob && (
@@ -535,30 +540,21 @@ export default function CareerOfficeJobs() {
                       </ul>
                     )}
                   </div>
-                </div>
 
-                <div className={styles.jobDetailActions}>
-                  <button 
-                    className={`btn ${styles.editButton}`}
-                    onClick={() => { setIsEditingJob(true); setIsAddingJob(false); }}
-                  >
-                    Edit Job
-                  </button>
-                  <button className={`btn ${styles.viewApplicantsButton}`} onClick={() => { document.getElementById('applicants')?.scrollIntoView({ behavior: 'smooth' }); }}>
-                    View Applicants ({selectedJob.applications})
-                  </button>
-                  {selectedJob.status === 'Active' ? (
-                    <button className={`btn ${styles.closeJobButton}`} onClick={() => handleChangeJobStatus(selectedJob, 'Closed')}>
-                      Close Job
+                  <div className={styles.jobDetailActions}>
+                    <button
+                      className={`btn ${styles.editButton}`}
+                      onClick={() => { setIsEditingJob(true); setIsAddingJob(false); }}
+                    >
+                      Edit
                     </button>
-                  ) : selectedJob.status === 'Closed' ? (
-                    <button className={`btn ${styles.reopenJobButton}`} onClick={() => handleChangeJobStatus(selectedJob, 'Active')}>
-                      Reopen Job
+                    <button
+                      className={`btn ${styles.deleteJobButton}`}
+                      onClick={() => handleDeleteJob(selectedJob)}
+                    >
+                      Delete
                     </button>
-                  ) : null}
-                  <button className={`btn ${styles.deleteJobButton}`} onClick={() => handleDeleteJob(selectedJob)}>
-                    Delete Job
-                  </button>
+                  </div>
                 </div>
               </div>
             )}

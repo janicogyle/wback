@@ -12,21 +12,35 @@ export default function ReportsPage() {
   const [viewRow, setViewRow] = useState(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const authConfig = getAuthConfig();
-      const navConfig = getNavConfig();
-      const role = localStorage.getItem(authConfig.userRoleKey);
-      // Only allow career office users
-      if (role !== authConfig.roles.careerOffice) {
-        if (role === authConfig.roles.student) {
-          router.push(navConfig.dashboardRedirects.student);
-        } else if (role === authConfig.roles.graduate) {
-          router.push(navConfig.dashboardRedirects.graduate);
-        } else {
+    let mounted = true;
+    const verifyRole = async () => {
+      try {
+        const authConfig = getAuthConfig();
+        const navConfig = getNavConfig();
+        const res = await fetch('/api/me', { cache: 'no-store' });
+        if (!mounted) return;
+        if (!res.ok) {
           router.push('/login');
+          return;
         }
+        const me = await res.json();
+        const role = me?.user?.role || me?.profile?.role; // support either shape
+        const roleKey = role === 'career_office' ? 'careerOffice' : role;
+        if (roleKey !== 'careerOffice') {
+          if (roleKey === 'student') {
+            router.push(navConfig.dashboardRedirects.student);
+          } else if (roleKey === 'graduate') {
+            router.push(navConfig.dashboardRedirects.graduate);
+          } else {
+            router.push('/login');
+          }
+        }
+      } catch {
+        router.push('/login');
       }
-    }
+    };
+    verifyRole();
+    return () => { mounted = false };
   }, [router]);
 
   // Load applications for reports

@@ -55,7 +55,7 @@
 
 /* Features Section */
 .featuresSection {
-  padding: 3rem 0 0 0;
+  padding: 5rem 2rem;
   background-color: var(--background);
 }
 
@@ -124,63 +124,6 @@
   margin-bottom: 1.5rem;
 }
 
-/* Testimonials Section */
-.testimonialsSection {
-  padding: 5rem 0;
-  background-color: var(--background);
-}
-
-.testimonialsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.testimonialCard {
-  height: 100%;
-}
-
-.testimonialText {
-  font-size: 1.125rem;
-  color: var(--gray-800);
-  line-height: 1.7;
-  font-style: italic;
-  margin-bottom: 1.5rem;
-  position: relative;
-}
-
-.testimonialText::before {
-  content: '"';
-  font-size: 3rem;
-  color: var(--primary);
-  opacity: 0.2;
-  position: absolute;
-  top: -1.5rem;
-  left: -0.5rem;
-}
-
-.testimonialAuthor {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.testimonialAvatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: var(--gray-300);
-}
-
-.testimonialName {
-  font-weight: 600;
-  color: var(--gray-900);
-}
-
-.testimonialRole {
-  font-size: 0.875rem;
-  color: var(--gray-600);
-}
 
 /* CTA Section */
 .ctaSection {
@@ -207,6 +150,25 @@
 .ctaText {
   font-size: 1.25rem;
   margin-bottom: 1rem;
+}
+
+/* CTA Button Override */
+.ctaSection .btn,
+.ctaSection button,
+.ctaSection a[href="/register"] {
+  background-color: #ff6600 !important;
+  color: white !important;
+  border: 2px solid white !important;
+  border-radius: 1rem;
+  transition: all 0.3s ease !important;
+}
+
+.ctaSection .btn:hover,
+.ctaSection button:hover,
+.ctaSection a[href="/register"]:hover {
+  background-color: white !important;
+  color: #ff6600 !important;
+  border: 2px solid white !important;
 }
 
 /* Responsive Styles */

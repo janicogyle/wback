@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 import Link from 'next/link';
 import styles from './career-office-login.module.css';
@@ -13,6 +14,7 @@ export default function CareerOfficeLogin() {
     email: '',
     password: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const [errors, setErrors] = useState({});
 
@@ -60,6 +62,11 @@ export default function CareerOfficeLogin() {
 
     try {
       const cred = await signInWithEmailAndPassword(firebaseAuth, formData.email, formData.password);
+      if (!cred.user.emailVerified) {
+        setErrors({ general: 'Please verify your email before logging in. Check your inbox.' });
+        try { await firebaseAuth.signOut(); } catch {}
+        return;
+      }
       const idToken = await cred.user.getIdToken();
 
       // Create HTTP-only session cookie in our app
@@ -124,6 +131,9 @@ export default function CareerOfficeLogin() {
               onChange={handleChange}
               required
               error={errors.password}
+              showPasswordToggle
+              isPasswordVisible={showPassword}
+              onTogglePassword={() => setShowPassword((v) => !v)}
             />
 
             <Button type="submit" variant="primary" fullWidth className={styles.loginButton}>

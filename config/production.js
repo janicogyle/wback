@@ -6,8 +6,8 @@ module.exports = {
   // Application settings
   app: {
     name: 'GCCCS CareerLink',
-    baseUrl: 'https://gcccs-careerlink.com', // Production URL would go here
-    apiUrl: 'https://gcccs-careerlink.com/api',
+    baseUrl: 'https://gcdevs.app',
+    apiUrl: 'https://gcdevs.app/api',
   },
   
   // Authentication settings

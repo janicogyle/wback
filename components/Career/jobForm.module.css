@@ -17,6 +17,8 @@
 	padding: 10px;
 	border: 1px solid #e6e9ef;
 	border-radius: 8px;
+	background-color: white;
+	color: black;
 }
 .formTextarea {
 	min-height: 120px;

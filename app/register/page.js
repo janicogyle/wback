@@ -1,13 +1,15 @@
 'use client';
 import { useState } from 'react';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification, signOut } from 'firebase/auth';
 import { firebaseAuth } from '../../lib/firebaseClient';
+import { firebaseDb } from '../../lib/firebaseClient';
+import { doc, setDoc } from 'firebase/firestore';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './register.module.css';
 import FormInput, { FormSelect } from '../../components/UI/FormInput/FormInput';
 import Button from '../../components/UI/Button/Button';
-import { getAuthConfig, getNavConfig, getValidationConfig } from '../../utils/config';
+import { getAuthConfig, getNavConfig, getValidationConfig, getAppConfig } from '../../utils/config';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -18,6 +20,8 @@ export default function Register() {
     confirmPassword: '',
     role: getAuthConfig().defaultRole,
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [errors, setErrors] = useState({});
 
@@ -85,13 +89,51 @@ export default function Register() {
       const cred = await createUserWithEmailAndPassword(firebaseAuth, formData.email, formData.password);
       const fullName = `${formData.firstName} ${formData.lastName}`.trim();
       await updateProfile(cred.user, { displayName: fullName });
-      const idToken = await cred.user.getIdToken();
-      await fetch('/api/auth/session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken, profile: { firstName: formData.firstName, lastName: formData.lastName, email: formData.email, role } })
-      });
-      window.location.href = navConfig.dashboardRedirects[role];
+
+      // Create a server-side session and upsert profile with names so it's available to /api/me and profile page
+      try {
+        const idToken = await cred.user.getIdToken();
+        await fetch('/api/auth/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken, profile: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            role: formData.role || 'student'
+          } })
+        });
+      } catch {}
+
+      // Persist profile to Firestore immediately so names are available on first login
+      try {
+        await setDoc(
+          doc(firebaseDb, 'users', cred.user.uid),
+          {
+            uid: cred.user.uid,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            fullName,
+            email: formData.email,
+            role: role || 'student',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          { merge: true }
+        );
+      } catch {}
+
+      // Send verification email
+      try {
+        const appCfg = getAppConfig();
+        const baseUrl = appCfg?.baseUrl || (typeof window !== 'undefined' ? window.location.origin : '');
+        const url = `${baseUrl}/auth/verify`;
+        await sendEmailVerification(cred.user, { url, handleCodeInApp: true });
+      } catch {}
+      try {
+        await signOut(firebaseAuth);
+      } catch {}
+      window.location.href = '/login?verify=sent';
     } catch (error) {
       setErrors({ general: error.message || 'Registration failed' });
     }
@@ -153,6 +195,9 @@ export default function Register() {
               onChange={handleChange}
               required
               error={errors.password}
+              showPasswordToggle
+              isPasswordVisible={showPassword}
+              onTogglePassword={() => setShowPassword((v) => !v)}
             />
 
             <FormInput
@@ -164,6 +209,9 @@ export default function Register() {
               onChange={handleChange}
               required
               error={errors.confirmPassword}
+              showPasswordToggle
+              isPasswordVisible={showConfirmPassword}
+              onTogglePassword={() => setShowConfirmPassword((v) => !v)}
             />
 
             <FormSelect

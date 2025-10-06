@@ -80,7 +80,7 @@
 .statIcon {
   font-size: 2rem;
   margin-right: 1rem;
-  color: var(--primary-color);
+  color: gray;
 }
 
 .statInfo {

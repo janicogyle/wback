@@ -1,152 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { firebaseDb } from '../../../../lib/firebaseClient';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import DashboardLayout from '@/components/Dashboard/DashboardLayout';
 import styles from './students.module.css';
 
 export default function CareerOfficeStudents() {
-  // Mock data for students
-  const initialStudents = [
-    {
-      id: 1,
-      name: 'Alex Johnson',
-      email: 'alex.johnson@university.edu',
-      major: 'Computer Science',
-      graduationYear: 2023,
-      university: 'Tech University',
-      skills: ['JavaScript', 'React', 'Node.js', 'MongoDB'],
-      gpa: 3.8,
-      jobPreferences: ['Frontend Developer', 'Full Stack Developer'],
-      location: 'San Francisco, CA',
-      availability: 'Immediate',
-      profileCompletion: 95,
-      applications: 8,
-      interviews: 3,
-      avatar: '👨‍🎓'
-    },
-    {
-      id: 2,
-      name: 'Sarah Williams',
-      email: 'sarah.williams@university.edu',
-      major: 'User Experience Design',
-      graduationYear: 2023,
-      university: 'Design Institute',
-      skills: ['UI/UX Design', 'Figma', 'Adobe XD', 'User Research'],
-      gpa: 3.9,
-      jobPreferences: ['UX Designer', 'Product Designer'],
-      location: 'New York, NY',
-      availability: 'Immediate',
-      profileCompletion: 100,
-      applications: 6,
-      interviews: 2,
-      avatar: '👩‍🎓'
-    },
-    {
-      id: 3,
-      name: 'Michael Chen',
-      email: 'michael.chen@university.edu',
-      major: 'Data Science',
-      graduationYear: 2023,
-      university: 'State University',
-      skills: ['Python', 'R', 'SQL', 'Machine Learning', 'Data Visualization'],
-      gpa: 4.0,
-      jobPreferences: ['Data Analyst', 'Data Scientist'],
-      location: 'Chicago, IL',
-      availability: 'After graduation',
-      profileCompletion: 90,
-      applications: 5,
-      interviews: 1,
-      avatar: '👨‍🎓'
-    },
-    {
-      id: 4,
-      name: 'Emily Rodriguez',
-      email: 'emily.rodriguez@university.edu',
-      major: 'Software Engineering',
-      graduationYear: 2024,
-      university: 'Tech University',
-      skills: ['Java', 'Spring', 'React', 'AWS'],
-      gpa: 3.7,
-      jobPreferences: ['Software Engineer', 'Backend Developer'],
-      location: 'Austin, TX',
-      availability: 'Summer 2023',
-      profileCompletion: 85,
-      applications: 3,
-      interviews: 0,
-      avatar: '👩‍🎓'
-    },
-    {
-      id: 5,
-      name: 'David Park',
-      email: 'david.park@university.edu',
-      major: 'Business Administration',
-      graduationYear: 2023,
-      university: 'Business School',
-      skills: ['Project Management', 'Marketing', 'Data Analysis', 'Leadership'],
-      gpa: 3.6,
-      jobPreferences: ['Product Manager', 'Business Analyst'],
-      location: 'Seattle, WA',
-      availability: 'Immediate',
-      profileCompletion: 80,
-      applications: 7,
-      interviews: 2,
-      avatar: '👨‍🎓'
-    },
-    {
-      id: 6,
-      name: 'Lisa Wong',
-      email: 'lisa.wong@university.edu',
-      major: 'Marketing',
-      graduationYear: 2023,
-      university: 'State University',
-      skills: ['Digital Marketing', 'Social Media', 'Content Creation', 'SEO'],
-      gpa: 3.5,
-      jobPreferences: ['Marketing Specialist', 'Social Media Manager'],
-      location: 'Los Angeles, CA',
-      availability: 'Immediate',
-      profileCompletion: 100,
-      applications: 10,
-      interviews: 4,
-      avatar: '👩‍🎓'
-    },
-    {
-      id: 7,
-      name: 'James Taylor',
-      email: 'james.taylor@university.edu',
-      major: 'Computer Engineering',
-      graduationYear: 2024,
-      university: 'Engineering Institute',
-      skills: ['C++', 'Python', 'Embedded Systems', 'IoT'],
-      gpa: 3.9,
-      jobPreferences: ['Software Engineer', 'Embedded Systems Engineer'],
-      location: 'Boston, MA',
-      availability: 'After graduation',
-      profileCompletion: 75,
-      applications: 2,
-      interviews: 0,
-      avatar: '👨‍🎓'
-    },
-    {
-      id: 8,
-      name: 'Olivia Martinez',
-      email: 'olivia.martinez@university.edu',
-      major: 'Graphic Design',
-      graduationYear: 2023,
-      university: 'Art Institute',
-      skills: ['Adobe Creative Suite', 'Illustration', 'Typography', 'Branding'],
-      gpa: 3.8,
-      jobPreferences: ['Graphic Designer', 'UI Designer'],
-      location: 'Miami, FL',
-      availability: 'Immediate',
-      profileCompletion: 95,
-      applications: 6,
-      interviews: 2,
-      avatar: '👩‍🎓'
-    }
-  ];
-
-  // State
-  const [students, setStudents] = useState(initialStudents);
+  // Real-time students from Firestore
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     major: 'all',
@@ -156,21 +19,68 @@ export default function CareerOfficeStudents() {
   const [sortBy, setSortBy] = useState('name');
   const [selectedStudent, setSelectedStudent] = useState(null);
 
+  // Fetch students from Firestore with real-time updates
+  useEffect(() => {
+    const studentsQuery = query(collection(firebaseDb, 'users'));
+    const unsubscribe = onSnapshot(studentsQuery, (snapshot) => {
+      const studentsData = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          name: data.fullName || `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Unknown',
+          email: data.email || 'N/A',
+          major: data.major || 'Not specified',
+          graduationYear: data.graduationDate ? new Date(data.graduationDate).getFullYear() : new Date().getFullYear(),
+          university: data.university || 'Not specified',
+          skills: data.skills ? (typeof data.skills === 'string' ? data.skills.split(',').map(s => s.trim()).filter(s => s) : data.skills) : [],
+          gpa: data.gpa || 'N/A',
+          jobPreferences: data.jobTypes || [],
+          location: data.city && data.state ? `${data.city}, ${data.state}` : data.city || data.state || 'Not specified',
+          availability: 'Immediate',
+          applications: 0,
+          avatar: data.firstName ? data.firstName.charAt(0).toUpperCase() : '?',
+          profileCompletion: calculateProfileCompletion(data),
+          role: data.role || 'student',
+          phone: data.phone || 'N/A',
+          degree: data.degree || 'N/A',
+          bio: data.bio || '',
+          resumeUrl: data.resumeUrl || '',
+          linkedinUrl: data.linkedinUrl || '',
+          githubUrl: data.githubUrl || '',
+          portfolioUrl: data.portfolioUrl || ''
+        };
+      }).filter(student => student.role === 'student' || student.role === 'graduate');
+      
+      setStudents(studentsData);
+      setLoading(false);
+    }, (error) => {
+      console.error('Error fetching students:', error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Calculate profile completion percentage
+  const calculateProfileCompletion = (data) => {
+    const fields = [
+      data.firstName, data.lastName, data.email, data.phone,
+      data.major, data.university, data.graduationDate,
+      data.skills, data.bio, data.degree
+    ];
+    const filledFields = fields.filter(field => field && field !== '').length;
+    return Math.round((filledFields / fields.length) * 100);
+  };
+
   // Filter students
   const filteredStudents = students.filter(student => {
-    // Search term filter
     const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          student.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    // Major filter
     const matchesMajor = filters.major === 'all' || student.major === filters.major;
-    
-    // Graduation year filter
     const matchesGraduationYear = filters.graduationYear === 'all' || 
                                  student.graduationYear.toString() === filters.graduationYear;
-    
-    // Availability filter
     const matchesAvailability = filters.availability === 'all' || 
                                student.availability.toLowerCase() === filters.availability.toLowerCase();
     
@@ -183,7 +93,9 @@ export default function CareerOfficeStudents() {
       case 'name':
         return a.name.localeCompare(b.name);
       case 'gpa':
-        return b.gpa - a.gpa;
+        const gpaA = typeof a.gpa === 'number' ? a.gpa : 0;
+        const gpaB = typeof b.gpa === 'number' ? b.gpa : 0;
+        return gpaB - gpaA;
       case 'graduationYear':
         return a.graduationYear - b.graduationYear;
       case 'profileCompletion':
@@ -194,15 +106,10 @@ export default function CareerOfficeStudents() {
   });
 
   // Get unique majors for filter
-  const uniqueMajors = [...new Set(students.map(student => student.major))];
-  
-  // Get unique graduation years for filter
+  const uniqueMajors = [...new Set(students.map(student => student.major).filter(m => m !== 'Not specified'))];
   const uniqueGraduationYears = [...new Set(students.map(student => student.graduationYear))];
-  
-  // Get unique availability options for filter
   const uniqueAvailability = [...new Set(students.map(student => student.availability))];
 
-  // Handle filter change
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
       ...prev,
@@ -210,12 +117,10 @@ export default function CareerOfficeStudents() {
     }));
   };
 
-  // Handle student selection
   const handleStudentSelect = (student) => {
     setSelectedStudent(student);
   };
 
-  // Handle close student detail
   const handleCloseStudentDetail = () => {
     setSelectedStudent(null);
   };
@@ -332,11 +237,13 @@ export default function CareerOfficeStudents() {
           <div className={styles.studentsList}>
             <div className={styles.studentsListHeader}>
               <div className={styles.studentsCount}>
-                {sortedStudents.length} {sortedStudents.length === 1 ? 'student' : 'students'} found
+                {loading ? 'Loading...' : `${sortedStudents.length} ${sortedStudents.length === 1 ? 'student' : 'students'} found`}
               </div>
             </div>
 
-            {sortedStudents.length > 0 ? (
+            {loading ? (
+              <div style={{ padding: '40px', textAlign: 'center' }}>Loading students...</div>
+            ) : sortedStudents.length > 0 ? (
               <div className={styles.studentsGrid}>
                 {sortedStudents.map(student => (
                   <div 
@@ -351,24 +258,10 @@ export default function CareerOfficeStudents() {
                       <div className={styles.studentUniversity}>{student.university}</div>
                       <div className={styles.studentGradYear}>Class of {student.graduationYear}</div>
                       
-                      <div className={styles.studentCompletion}>
-                        <div className={styles.completionLabel}>Profile: {student.profileCompletion}%</div>
-                        <div className={styles.completionBar}>
-                          <div 
-                            className={styles.completionFill} 
-                            style={{ width: `${student.profileCompletion}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                      
                       <div className={styles.studentStats}>
                         <div className={styles.statItem}>
                           <span className={styles.statValue}>{student.applications}</span>
-                          <span className={styles.statLabel}>Applications</span>
-                        </div>
-                        <div className={styles.statItem}>
-                          <span className={styles.statValue}>{student.interviews}</span>
-                          <span className={styles.statLabel}>Interviews</span>
+                          <span className={styles.statLabel}>applications</span>
                         </div>
                       </div>
                       
@@ -419,6 +312,10 @@ export default function CareerOfficeStudents() {
                       <span>{selectedStudent.email}</span>
                     </div>
                     <div className={styles.studentDetailItem}>
+                      <span className={styles.detailLabel}>Phone:</span>
+                      <span>{selectedStudent.phone}</span>
+                    </div>
+                    <div className={styles.studentDetailItem}>
                       <span className={styles.detailLabel}>Location:</span>
                       <span>{selectedStudent.location}</span>
                     </div>
@@ -426,6 +323,10 @@ export default function CareerOfficeStudents() {
 
                   <div className={styles.studentDetailSection}>
                     <h3 className={styles.sectionTitle}>Academic Information</h3>
+                    <div className={styles.studentDetailItem}>
+                      <span className={styles.detailLabel}>Degree:</span>
+                      <span>{selectedStudent.degree}</span>
+                    </div>
                     <div className={styles.studentDetailItem}>
                       <span className={styles.detailLabel}>GPA:</span>
                       <span>{selectedStudent.gpa}</span>
@@ -436,52 +337,63 @@ export default function CareerOfficeStudents() {
                     </div>
                   </div>
 
-                  <div className={styles.studentDetailSection}>
-                    <h3 className={styles.sectionTitle}>Skills</h3>
-                    <div className={styles.skillsList}>
-                      {selectedStudent.skills.map((skill, index) => (
-                        <span key={index} className={styles.skillBadge}>{skill}</span>
-                      ))}
+                  {selectedStudent.bio && (
+                    <div className={styles.studentDetailSection}>
+                      <h3 className={styles.sectionTitle}>Bio</h3>
+                      <p>{selectedStudent.bio}</p>
                     </div>
-                  </div>
+                  )}
 
-                  <div className={styles.studentDetailSection}>
-                    <h3 className={styles.sectionTitle}>Job Preferences</h3>
-                    <ul className={styles.preferencesList}>
-                      {selectedStudent.jobPreferences.map((preference, index) => (
-                        <li key={index} className={styles.preferenceItem}>{preference}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className={styles.studentDetailSection}>
-                    <h3 className={styles.sectionTitle}>Application History</h3>
-                    <div className={styles.applicationStats}>
-                      <div className={styles.applicationStat}>
-                        <div className={styles.statValue}>{selectedStudent.applications}</div>
-                        <div className={styles.statLabel}>Applications</div>
-                      </div>
-                      <div className={styles.applicationStat}>
-                        <div className={styles.statValue}>{selectedStudent.interviews}</div>
-                        <div className={styles.statLabel}>Interviews</div>
-                      </div>
-                      <div className={styles.applicationStat}>
-                        <div className={styles.statValue}>0</div>
-                        <div className={styles.statLabel}>Offers</div>
+                  {selectedStudent.skills.length > 0 && (
+                    <div className={styles.studentDetailSection}>
+                      <h3 className={styles.sectionTitle}>Skills</h3>
+                      <div className={styles.skillsList}>
+                        {selectedStudent.skills.map((skill, index) => (
+                          <span key={index} className={styles.skillBadge}>{skill}</span>
+                        ))}
                       </div>
                     </div>
+                  )}
+
+                  {selectedStudent.jobPreferences.length > 0 && (
+                    <div className={styles.studentDetailSection}>
+                      <h3 className={styles.sectionTitle}>Job Preferences</h3>
+                      <ul className={styles.preferencesList}>
+                        {selectedStudent.jobPreferences.map((preference, index) => (
+                          <li key={index} className={styles.preferenceItem}>{preference}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className={styles.studentDetailSection}>
+                    <h3 className={styles.sectionTitle}>Links</h3>
+                    {selectedStudent.linkedinUrl && (
+                      <div className={styles.studentDetailItem}>
+                        <a href={selectedStudent.linkedinUrl} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                      </div>
+                    )}
+                    {selectedStudent.githubUrl && (
+                      <div className={styles.studentDetailItem}>
+                        <a href={selectedStudent.githubUrl} target="_blank" rel="noopener noreferrer">GitHub</a>
+                      </div>
+                    )}
+                    {selectedStudent.portfolioUrl && (
+                      <div className={styles.studentDetailItem}>
+                        <a href={selectedStudent.portfolioUrl} target="_blank" rel="noopener noreferrer">Portfolio</a>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 <div className={styles.studentDetailActions}>
-                  <button className={`btn ${styles.viewResumeButton}`}>
-                    View Resume
-                  </button>
-                  <button className={`btn ${styles.viewPortfolioButton}`}>
-                    View Portfolio
-                  </button>
-                  <button className={`btn ${styles.contactButton}`}>
-                    Contact Student
+                  {selectedStudent.resumeUrl && (
+                    <a href={selectedStudent.resumeUrl} target="_blank" rel="noopener noreferrer" className={`btn ${styles.downloadResumeButton}`}>
+                      View Resume
+                    </a>
+                  )}
+                  <button className={`btn ${styles.hideButton}`} onClick={handleCloseStudentDetail}>
+                    Hide
                   </button>
                 </div>
               </div>
